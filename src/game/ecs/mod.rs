@@ -2,7 +2,6 @@ use self::entity::Entity;
 
 pub mod entity;
 pub mod component;
-pub mod system;
 
 pub struct ECS {
     entities: Vec<Entity>
