@@ -40,6 +40,9 @@ impl Game {
             if self.engine.is_key_pressed(KeyCode::Esc) {
                 break;
             }
+            if self.engine.is_key_pressed(KeyCode::Char('æ')) {
+                break;
+            }
             self.engine.clear_screen();
 
         }
