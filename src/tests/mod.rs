@@ -1,8 +1,46 @@
+use std::panic;
+
+use console_engine::ConsoleEngine;
+
+use crate::components::transform::Transform;
+
 #[cfg(test)]
 // Note this useful idiom: importing names from outer (for mod tests) scope.
 use super::*;
 
+struct TestEnv {
+    pub game: Game,
+    pub entity: Entity
+}
+
+fn initialize() -> TestEnv {
+    return TestEnv { game: init_game(), entity: Entity::new("test_id".to_string()) }
+}
+
 #[test]
-fn test_these_are_running() {
-    assert_eq!(true, true)
+fn can_add_entity() {
+    let mut test_env = initialize();
+    let added_id: String = test_env.entity.get_id().to_string();
+    test_env.game.add_entity(test_env.entity);
+
+    let added_entity = test_env.game.get_entity_by_id(added_id);
+    match added_entity {
+        None    => { assert!(false) }
+        Some(_) => { assert!(true) }
+    }
+}
+#[test]
+fn can_add_component() {
+    let mut test_env = initialize();
+    let mut entity = test_env.entity;
+
+    entity.add_component(Box::new(Position::zero()));
+
+    let added_component = entity.get_component(Position::zero());
+
+    match added_component {
+        None    => { assert!(false) }
+        Some(_) => { assert!(true) }
+    }
+
 }

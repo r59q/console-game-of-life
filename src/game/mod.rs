@@ -25,6 +25,9 @@ impl Game {
     pub fn add_entity(&mut self, entity: Entity) {
         self.ecs.add_entity(entity)
     }
+    pub fn get_entity_by_id(&self, id: String) -> Option<&Entity> {
+        return self.ecs.get_entity(id);
+    }
 
     fn init(&mut self) {
         self.is_started = true;

@@ -14,4 +14,12 @@ impl ECS {
     pub fn add_entity(&mut self, entity: Entity) {
         self.entities.push(entity)
     }
+    pub fn get_entity(&self, id: String) -> Option<&Entity> {
+        for entity in self.entities.iter() {
+            if entity.get_id() == id {
+                return Some(entity);
+            }
+        }
+        return None;
+    }
 }
