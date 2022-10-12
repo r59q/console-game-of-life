@@ -1,5 +1,5 @@
 use game::{ecs::entity::Entity, Game, init_game};
-use crate::components::transform::{Position, Transform};
+use crate::components::transform::{Position};
 
 mod game;
 mod components;

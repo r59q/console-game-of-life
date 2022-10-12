@@ -1,9 +1,3 @@
-use std::panic;
-
-use console_engine::ConsoleEngine;
-
-use crate::components::transform::Transform;
-
 #[cfg(test)]
 // Note this useful idiom: importing names from outer (for mod tests) scope.
 use super::*;
@@ -29,18 +23,11 @@ fn can_add_entity() {
         Some(_) => { assert!(true) }
     }
 }
+
 #[test]
 fn can_add_component() {
-    let mut test_env = initialize();
+    let test_env = initialize();
     let mut entity = test_env.entity;
-
     entity.add_component(Box::new(Position::zero()));
-
-    let added_component = entity.get_component(Position::zero());
-
-    match added_component {
-        None    => { assert!(false) }
-        Some(_) => { assert!(true) }
-    }
-
+    assert_ne!(0, entity.get_components().iter().len());
 }

@@ -1,5 +1,4 @@
 use crate::game::ecs::component::Component;
-use std::any::type_name;
 
 pub struct Entity {
     id: String,
@@ -15,18 +14,25 @@ impl Entity {
         self.components.push(component)
     }
 
-    fn type_of<T>(_: T) -> &'static str {
+    pub fn get_components(&self) -> &Vec<Box<dyn Component>> {
+        return &self.components;
+    }
+
+    /*
+     fn type_of<T>(_: T) -> &'static str {
         type_name::<T>()
     }
 
-    pub fn get_component<T: Component>(&self, _: T) -> Option<T> {
+    pub fn get_component<T: Component>(&self, _: T) -> Option<Box<T>> {
         for component in self.components.iter() {
+            println!("Typed componen ! -> {}", Self::type_of(component))
+            /*
             if Self::type_of(component) == type_name::<T>() {
-                return Some(component)
-            }
+                return Some(*component)
+            }*/
         }
         return None;
-    }
+    }*/
 
     pub fn get_id(&self) -> &str {
         return &self.id
