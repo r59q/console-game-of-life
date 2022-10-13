@@ -1,12 +1,20 @@
-use game::{ecs::entity::Entity, Game, init_game};
+use components::{position::Position, velocity::Velocity};
+use game::Game;
+
 mod game;
 mod components;
+
 fn main() {
-    let mut game: Game = init_game();
+    let mut game: Game = Game::new();
+    let mut player_entity = 
+        game.get_world().spawn();
 
-    let entity: Entity = Entity::new("Player".to_string());
+    player_entity
+        .insert(Position {x: 0., y: 0.})
+        .insert(Velocity {x: 0., y:0.});
 
-    game.add_entity(entity);
-    
     game.start();
 }
+
+#[cfg(test)]
+mod tests;

@@ -1,5 +1,5 @@
 [package]
-name = "console_engine_test"
+name = "console-game"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 console_engine = "2.5.0"
 rand = "0.8.5"
+bevy_ecs = "0.8.1"
