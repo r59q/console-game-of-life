@@ -1,6 +1,9 @@
 #[cfg(test)]
 // Note this useful idiom: importing names from outer (for mod tests) scope.
 use super::*;
+use crate::Game;
+use crate::Entity;
+use crate::init_game;
 
 struct TestEnv {
     pub game: Game,
@@ -30,4 +33,8 @@ fn can_add_component() {
     let mut entity = test_env.entity;
     entity.add_component(Box::new(Position::zero()));
     assert_ne!(0, entity.get_components().iter().len());
+}
+
+#[test]
+fn can_get_component() {
 }
