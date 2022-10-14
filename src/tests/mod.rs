@@ -1,4 +1,6 @@
 mod ecs_tests;
+mod movement_tests;
+mod resources_test;
 use bevy_ecs::prelude::*;
 
 use super::*;
