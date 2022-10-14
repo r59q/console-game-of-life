@@ -21,3 +21,19 @@ pub fn initialize_with_entity() -> TestEnv {
     let entity = game.get_world().spawn().id();
     return TestEnv { game: game, entity: entity }
 }
+
+/*
+#[test]
+fn some_test() {
+    let mut test_env = initialize();
+
+    test_env.game.get_world().insert_resource(Timer::default());
+
+    let mut schedule = Schedule::default();
+    schedule.add_stage("update", SystemStage::parallel()
+        .with_system(movement)
+    );
+
+}
+
+ */
