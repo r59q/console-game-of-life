@@ -39,7 +39,6 @@ impl Game {
                 break;
             }
             self.engine.clear_screen();
-
         }
     }
 }
