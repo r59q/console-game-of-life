@@ -108,5 +108,25 @@ fn can_add_velocity_component() {
     let velo_to_add_y = velocity_to_add.y;
 
     assert_eq!(velo_x, velo_to_add_x);
-    assert_eq!(velo_y, velo_to_add_y);    
+    assert_eq!(velo_y, velo_to_add_y);
+}
+
+#[test]
+fn can_add_multiple_components() {
+    let mut test_env = initialize_with_entity();
+
+    let entity = test_env.entity;
+    let velocity_component = Velocity {x:6., y:-51.};
+    let position_component = Position {x:6., y:-51.};
+    test_env.game.get_world().entity_mut(entity)
+        .insert(velocity_component)
+        .insert(position_component);
+
+    let world_entity = test_env.game.get_world().entity(entity);
+
+    let world_position = world_entity.get::<Position>();
+    let world_velocity = world_entity.get::<Position>();
+
+    assert_ne!(world_velocity.is_none(), true);
+    assert_ne!(world_position.is_none(), true);
 }
