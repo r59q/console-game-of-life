@@ -130,3 +130,24 @@ fn can_add_multiple_components() {
     assert_ne!(world_velocity.is_none(), true);
     assert_ne!(world_position.is_none(), true);
 }
+
+#[test]
+fn can_add_multiple_systems() {
+    let mut test_env = initialize_with_entity();
+    let entity = test_env.game.get_world().spawn().insert(TestComponent{x:1}).id();
+
+    let mut schedule = Schedule::default();
+
+    schedule.add_stage(
+        "update",
+        SystemStage::parallel().
+            with_system(test_system).
+            with_system(test_system)
+    );
+
+    let mut comp = test_env.game.get_world().get_entity(entity).unwrap().get::<TestComponent>().unwrap();
+    let prev_x = comp.x;
+    schedule.run_once(&mut test_env.game.get_world());
+    comp = test_env.game.get_world().get_entity(entity).unwrap().get::<TestComponent>().unwrap();
+    assert_eq!(prev_x, comp.x -2)
+}
