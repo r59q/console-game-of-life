@@ -1,6 +1,5 @@
 use super::*;
 
-use crate::systems::*;
 use crate::systems::movement::movement_system;
 
 #[test]
@@ -8,7 +7,7 @@ fn can_add_movement_system() {
     let mut test_env = initialize();
     test_env.game.get_world().spawn()
         .insert(Position { x: 0., y: 0. })
-        .insert(Velocity { x: 0., y: 0. }).id();
+        .insert(Velocity { x: 0., y: 0. });
 
     let mut schedule = Schedule::default();
 

@@ -1,6 +1,5 @@
 use components::{position::Position, velocity::Velocity};
 use game::Game;
-use crate::resources::timer::Timer;
 
 mod game;
 mod components;
