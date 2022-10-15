@@ -1,4 +1,5 @@
 use crate::components::rendering_character::RenderingCharacter;
+use crate::systems::character_renderer::character_renderer;
 
 use super::*;
 
@@ -25,4 +26,10 @@ fn can_get_rendering_character_component() {
     }
 }
 
-
+#[test]
+fn can_add_renderer() {
+    let mut test_env = initialize();
+    test_env.game.add_stage_to_schedule("Update", SystemStage::parallel()
+        .with_system(character_renderer),
+    )
+}

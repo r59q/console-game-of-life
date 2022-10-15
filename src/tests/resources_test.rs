@@ -1,4 +1,5 @@
 use std::time::Duration;
+use crate::resources::render_targets::RenderTargets;
 
 use crate::resources::timer::Timer;
 use crate::systems::timing::timing_system;
@@ -70,4 +71,20 @@ fn timer_with_timing_system_contains_last_frame_delta() {
     assert_eq!(first_frame_delta, 0);
     assert_ne!(second_frame_delta, 0);
     assert_ne!(second_frame_delta, third_frame_delta);
+}
+
+#[test]
+fn can_add_rendering_target() {
+    let mut test_env = initialize();
+
+    let render_targets_resource = RenderTargets::new();
+
+    test_env.game.get_world_mut().insert_resource(render_targets_resource);
+
+    let render_targets = test_env.game.get_world_ref().get_resource::<RenderTargets>();
+
+    match render_targets {
+        None => { assert!(false) }
+        Some(_) => { assert!(true) }
+    }
 }
