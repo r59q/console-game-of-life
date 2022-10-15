@@ -8,6 +8,7 @@ use super::*;
 mod ecs_tests;
 mod movement_tests;
 mod resources_test;
+mod rendering;
 
 pub struct TestEnv {
     pub game: Game,
