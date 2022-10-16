@@ -10,3 +10,6 @@ pub fn character_renderer(mut render_targets: ResMut<RenderTargets>, query: Quer
         render_targets.add(RenderTarget::new(position, character));
     }
 }
+
+pub fn character_renderer_reset(mut render_targets: ResMut<RenderTargets>) {
+}

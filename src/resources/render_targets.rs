@@ -23,6 +23,10 @@ impl RenderTargets {
         };
     }
 
+    pub fn reset(&mut self) {
+        self.targets.clear();
+    }
+
     pub fn add(&mut self, target: RenderTarget) {
         self.targets.push(target);
     }
@@ -34,6 +38,7 @@ mod test {
     use crate::components::rendering_character::RenderingCharacter;
     use crate::resources::render_targets::{RenderTarget, RenderTargets};
 
+    #[test]
     fn can_add_to_targets() {
         let mut targets = RenderTargets::new();
         let position = Position { x: 0., y: 0. };
@@ -43,5 +48,17 @@ mod test {
         assert_eq!(targets.targets.len(), 0);
         targets.add(new_target);
         assert_eq!(targets.targets.len(), 1);
+    }
+
+    #[test]
+    fn can_reset_targets() {
+        let mut targets = RenderTargets::new();
+        let position = Position { x: 0., y: 0. };
+        let new_target = RenderTarget {position, character: 't' };
+
+        targets.add(new_target);
+        assert_eq!(targets.targets.len(), 1);
+        targets.reset();
+        assert_eq!(targets.targets.len(), 0);
     }
 }
