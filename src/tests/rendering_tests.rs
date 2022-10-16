@@ -33,3 +33,31 @@ fn can_add_renderer() {
         .with_system(character_renderer),
     )
 }
+
+#[test]
+fn add_and_reset_render_target() {
+    let mut test_env = initialize_with_rendered_entity_and_timing_system();
+
+    let mut render_targets = test_env.game.get_world_mut().get_resource::<RenderTargets>();
+
+    match render_targets {
+        None => { assert!(false) }
+        Some(targets) => {
+            assert_eq!(0, targets.get_cloned_targets().len())
+        }
+    }
+
+    test_env.game.run_schedule();
+    test_env.game.run_schedule();
+    test_env.game.run_schedule();
+
+    render_targets = test_env.game.get_world_mut().get_resource::<RenderTargets>();
+
+    match render_targets {
+        None => { assert!(false) }
+        Some(targets) => {
+            assert_eq!(1, targets.get_cloned_targets().len())
+        }
+    }
+}
+
