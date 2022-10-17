@@ -66,6 +66,7 @@ impl Game {
         self.is_started = false;
     }
 
+    // Todo: Refactor this
     fn capture_inputs(&mut self) {
         let mouse_left_pos_down = self.engine.get_mouse_press(MouseButton::Left);
         let mouse_left_pos_up = self.engine.get_mouse_released(MouseButton::Left);
@@ -74,6 +75,22 @@ impl Game {
         let mouse_right_pos_down = self.engine.get_mouse_press(MouseButton::Right);
         let mouse_right_pos_up = self.engine.get_mouse_released(MouseButton::Right);
         let mouse_right_pos_held = self.engine.get_mouse_held(MouseButton::Right);
+
+        let a_key_down = self.engine.is_key_pressed(KeyCode::Char('a'));
+        let a_key_held = self.engine.is_key_held(KeyCode::Char('a'));
+        let a_key_up = self.engine.is_key_released(KeyCode::Char('a'));
+
+        let w_key_down = self.engine.is_key_pressed(KeyCode::Char('w'));
+        let w_key_held = self.engine.is_key_held(KeyCode::Char('w'));
+        let w_key_up = self.engine.is_key_released(KeyCode::Char('w'));
+
+        let s_key_down = self.engine.is_key_pressed(KeyCode::Char('s'));
+        let s_key_held = self.engine.is_key_held(KeyCode::Char('s'));
+        let s_key_up = self.engine.is_key_released(KeyCode::Char('s'));
+
+        let d_key_down = self.engine.is_key_pressed(KeyCode::Char('d'));
+        let d_key_held = self.engine.is_key_held(KeyCode::Char('d'));
+        let d_key_up = self.engine.is_key_released(KeyCode::Char('d'));
 
         let inputs = self.get_world_mut().get_resource_mut::<Inputs>();
         if let Some(mut inputs) = inputs {
@@ -95,6 +112,46 @@ impl Game {
             }
             if let Some(mouse_right_pos_up) = mouse_right_pos_up {
                 inputs.register_mouse_press(crate::resources::inputs::MouseButton::RIGHT, UP, mouse_right_pos_up);
+            }
+
+            if a_key_down {
+                inputs.register_key_press(KeyCode::Char('a'), DOWN)
+            }
+            if a_key_held {
+                inputs.register_key_press(KeyCode::Char('a'), HELD)
+            }
+            if a_key_up {
+                inputs.register_key_press(KeyCode::Char('a'), UP)
+            }
+
+            if w_key_down {
+                inputs.register_key_press(KeyCode::Char('w'), DOWN)
+            }
+            if w_key_held {
+                inputs.register_key_press(KeyCode::Char('w'), HELD)
+            }
+            if w_key_up {
+                inputs.register_key_press(KeyCode::Char('w'), UP)
+            }
+
+            if d_key_down {
+                inputs.register_key_press(KeyCode::Char('d'), DOWN)
+            }
+            if d_key_held {
+                inputs.register_key_press(KeyCode::Char('d'), HELD)
+            }
+            if d_key_up {
+                inputs.register_key_press(KeyCode::Char('d'), UP)
+            }
+
+            if s_key_down {
+                inputs.register_key_press(KeyCode::Char('s'), DOWN)
+            }
+            if s_key_held {
+                inputs.register_key_press(KeyCode::Char('s'), HELD)
+            }
+            if s_key_up {
+                inputs.register_key_press(KeyCode::Char('s'), UP)
             }
         }
     }
