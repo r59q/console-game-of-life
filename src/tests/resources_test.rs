@@ -1,4 +1,5 @@
 use std::time::Duration;
+use crate::resources::inputs::Inputs;
 use crate::resources::render_targets::RenderTargets;
 
 use crate::resources::timer::Timer;
@@ -88,3 +89,21 @@ fn can_add_rendering_target() {
         Some(_) => { assert!(true) }
     }
 }
+
+
+#[test]
+fn can_add_input_resource() {
+    let mut test_env = initialize();
+
+    let input_resource = Inputs::new();
+
+    test_env.game.get_world_mut().insert_resource(input_resource);
+
+    let render_targets = test_env.game.get_world_ref().get_resource::<Inputs>();
+
+    match render_targets {
+        None => { assert!(false) }
+        Some(_) => { assert!(true) }
+    }
+}
+

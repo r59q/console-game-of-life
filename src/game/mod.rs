@@ -2,7 +2,6 @@ use bevy_ecs::prelude::{Schedule, Stage, SystemStage};
 use bevy_ecs::schedule::StageLabel;
 use bevy_ecs::world::World;
 use console_engine::{ConsoleEngine, KeyCode};
-use console_engine::crossterm::ErrorKind;
 use console_engine::pixel::pxl;
 
 use crate::resources::render_targets::RenderTargets;
