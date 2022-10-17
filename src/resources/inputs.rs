@@ -1,17 +1,14 @@
-use std::collections::HashMap;
-use std::iter::Map;
-
 use console_engine::KeyCode;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
-enum MouseButton {
+pub enum MouseButton {
     LEFT,
     RIGHT,
     NONE,
 }
 
 #[derive(Clone, Copy)]
-enum Direction {
+pub enum Direction {
     UP,
     HELD,
     DOWN,
@@ -149,7 +146,7 @@ mod test {
 
     #[test]
     fn can_get_mouse_up_where_none_are() {
-        let mut inputs = Inputs::new();
+        let inputs = Inputs::new();
 
         let mouse_down = inputs.get_mouse_up(NONE);
 
@@ -158,7 +155,7 @@ mod test {
 
     #[test]
     fn can_none_option_position() {
-        let mut inputs = Inputs::new();
+        let inputs = Inputs::new();
 
         let mouse_pos: Option<(u32, u32)> = inputs.get_mouse_position();
         match mouse_pos {
@@ -222,7 +219,7 @@ mod test {
 
     #[test]
     fn can_get_keyboard_down() {
-        let mut inputs = Inputs::new();
+        let inputs = Inputs::new();
 
         let a_down = inputs.get_key_down(KeyCode::Char('a'));
 
