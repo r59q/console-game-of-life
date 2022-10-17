@@ -1,9 +1,12 @@
+use bevy_ecs::change_detection::Mut;
 use bevy_ecs::prelude::{Schedule, Stage, SystemStage};
 use bevy_ecs::schedule::StageLabel;
 use bevy_ecs::world::World;
-use console_engine::{ConsoleEngine, KeyCode};
+use console_engine::{ConsoleEngine, KeyCode, MouseButton};
 use console_engine::pixel::pxl;
 
+use crate::resources::inputs::Direction::{DOWN, HELD, UP};
+use crate::resources::inputs::Inputs;
 use crate::resources::render_targets::RenderTargets;
 
 pub struct Game {
@@ -63,7 +66,42 @@ impl Game {
         self.is_started = false;
     }
 
+    fn capture_inputs(&mut self) {
+        let mouse_left_pos_down = self.engine.get_mouse_press(MouseButton::Left);
+        let mouse_left_pos_up = self.engine.get_mouse_released(MouseButton::Left);
+        let mouse_left_pos_held = self.engine.get_mouse_held(MouseButton::Left);
+
+        let mouse_right_pos_down = self.engine.get_mouse_press(MouseButton::Right);
+        let mouse_right_pos_up = self.engine.get_mouse_released(MouseButton::Right);
+        let mouse_right_pos_held = self.engine.get_mouse_held(MouseButton::Right);
+
+        let inputs = self.get_world_mut().get_resource_mut::<Inputs>();
+        if let Some(mut inputs) = inputs {
+            if let Some(mouse_left_pos_down) = mouse_left_pos_down {
+                inputs.register_mouse_press(crate::resources::inputs::MouseButton::LEFT, DOWN, mouse_left_pos_down);
+            }
+            if let Some(mouse_left_pos_held) = mouse_left_pos_held {
+                inputs.register_mouse_press(crate::resources::inputs::MouseButton::LEFT, HELD, mouse_left_pos_held);
+            }
+            if let Some(mouse_left_pos_up) = mouse_left_pos_up {
+                inputs.register_mouse_press(crate::resources::inputs::MouseButton::LEFT, UP, mouse_left_pos_up);
+            }
+
+            if let Some(mouse_right_pos_down) = mouse_right_pos_down {
+                inputs.register_mouse_press(crate::resources::inputs::MouseButton::RIGHT, DOWN, mouse_right_pos_down);
+            }
+            if let Some(mouse_right_pos_held) = mouse_right_pos_held {
+                inputs.register_mouse_press(crate::resources::inputs::MouseButton::RIGHT, HELD, mouse_right_pos_held);
+            }
+            if let Some(mouse_right_pos_up) = mouse_right_pos_up {
+                inputs.register_mouse_press(crate::resources::inputs::MouseButton::RIGHT, UP, mouse_right_pos_up);
+            }
+        }
+    }
+
     fn game_logic(&mut self) {
+        self.capture_inputs();
+
         self.run_schedule();
     }
 

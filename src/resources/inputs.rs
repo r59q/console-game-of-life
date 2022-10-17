@@ -60,16 +60,24 @@ impl Inputs {
         return button == self.mouse_inputs.down;
     }
 
-    pub fn get_mouse_up(&self, button: MouseButton) -> bool {
-        return button == self.mouse_inputs.up;
-    }
-
     pub fn get_mouse_held(&self, button: MouseButton) -> bool {
         return button == self.mouse_inputs.held;
     }
 
+    pub fn get_mouse_up(&self, button: MouseButton) -> bool {
+        return button == self.mouse_inputs.up;
+    }
+
+    pub fn get_mouse_down_or_held(&self, button: MouseButton) -> bool {
+        return self.get_mouse_down(button) || self.get_mouse_held(button);
+    }
+
     pub fn get_key_down(&self, key: KeyCode) -> bool {
         return key == self.keyboard.down;
+    }
+
+    pub fn get_key_down_or_held(&self, key: KeyCode) -> bool {
+        return self.get_key_down(key) || self.get_key_held(key);
     }
 
     pub fn get_key_up(&self, key: KeyCode) -> bool {
@@ -277,5 +285,43 @@ mod test {
 
         assert_eq!(true, get_left);
         assert_eq!((123, 321), mouse_pos.unwrap());
+    }
+
+    #[test]
+    fn can_get_key_down_or_held() {
+        let mut inputs = Inputs::new();
+
+        inputs.register_key_press(KeyCode::Backspace, DOWN);
+
+        let get_down = inputs.get_key_down_or_held(KeyCode::Backspace);
+
+        assert_eq!(true, get_down);
+
+        inputs.reset_inputs();
+
+        inputs.register_key_press(KeyCode::Backspace, HELD);
+
+        let get_held = inputs.get_key_down_or_held(KeyCode::Backspace);
+
+        assert_eq!(true, get_held);
+    }
+
+    #[test]
+    fn can_get_mouse_down_or_held() {
+        let mut inputs = Inputs::new();
+
+        inputs.register_mouse_press(LEFT, DOWN, (0, 0));
+
+        let get_down = inputs.get_mouse_down_or_held(LEFT);
+
+        assert_eq!(true, get_down);
+
+        inputs.reset_inputs();
+
+        inputs.register_mouse_press(LEFT, HELD, (0, 0));
+
+        let get_held = inputs.get_mouse_down_or_held(LEFT);
+
+        assert_eq!(true, get_held);
     }
 }

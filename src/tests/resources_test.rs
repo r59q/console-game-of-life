@@ -1,8 +1,11 @@
 use std::time::Duration;
-use crate::resources::inputs::Inputs;
-use crate::resources::render_targets::RenderTargets;
 
+use console_engine::KeyCode;
+
+use crate::resources::inputs::{Direction, Inputs};
+use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
+use crate::systems::reset_input::reset_inputs;
 use crate::systems::timing::timing_system;
 
 use super::*;
@@ -99,11 +102,68 @@ fn can_add_input_resource() {
 
     test_env.game.get_world_mut().insert_resource(input_resource);
 
-    let render_targets = test_env.game.get_world_ref().get_resource::<Inputs>();
+    let inputs = test_env.game.get_world_ref().get_resource::<Inputs>();
 
-    match render_targets {
+    match inputs {
         None => { assert!(false) }
         Some(_) => { assert!(true) }
     }
+}
+
+#[test]
+fn can_read_from_input_resource() {
+    let mut test_env = initialize();
+
+    let input_resource = Inputs::new();
+
+    test_env.game.get_world_mut().insert_resource(input_resource);
+
+    let inputs = test_env.game.get_world_ref().get_resource::<Inputs>().unwrap();
+
+    let key_down = inputs.get_key_down(KeyCode::Char('t'));
+
+    assert_eq!(false, key_down)
+}
+
+#[test]
+fn can_set_input_resource() {
+    let mut test_env = initialize();
+    let input_resource = Inputs::new();
+    test_env.game.get_world_mut().insert_resource(input_resource);
+
+    let mut inputs_mut = test_env.game.get_world_mut().get_resource_mut::<Inputs>().unwrap();
+    inputs_mut.register_key_press(KeyCode::Char('k'), Direction::DOWN);
+
+    let inputs = test_env.game.get_world_ref().get_resource::<Inputs>().unwrap();
+    let key_down = inputs.get_key_down(KeyCode::Char('k'));
+
+    assert_eq!(true, key_down);
+}
+
+#[test]
+fn system_can_reset_inputs() {
+    let mut test_env = initialize();
+    let input_resource = Inputs::new();
+    test_env.game.get_world_mut().insert_resource(input_resource);
+
+    test_env.game.add_stage_to_schedule(
+        "test",
+        SystemStage::parallel().with_system(reset_inputs),
+    );
+
+    let mut inputs_mut = test_env.game.get_world_mut().get_resource_mut::<Inputs>().unwrap();
+    inputs_mut.register_key_press(KeyCode::Char('k'), Direction::DOWN);
+
+    let mut inputs = test_env.game.get_world_ref().get_resource::<Inputs>().unwrap();
+    let mut key_down = inputs.get_key_down(KeyCode::Char('k'));
+
+    assert_eq!(true, key_down);
+
+    test_env.game.run_schedule();
+
+    inputs = test_env.game.get_world_ref().get_resource::<Inputs>().unwrap();
+    key_down = inputs.get_key_down(KeyCode::Char('k'));
+
+    assert_eq!(false, key_down);
 }
 
