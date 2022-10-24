@@ -2,8 +2,13 @@ use console_engine::KeyCode;
 
 use super::axis::Axis;
 
+pub struct AxialBinding {
+    
+}
+
 pub struct Bindings {
 }
+
 impl Bindings {
     pub fn new() -> Self {
         Self { }
