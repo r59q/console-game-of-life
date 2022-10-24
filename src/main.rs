@@ -17,6 +17,7 @@ mod game;
 mod components;
 mod systems;
 mod resources;
+mod inputmanager;
 
 fn main() {
     let mut game: Game = Game::new(3, 3, 30);
