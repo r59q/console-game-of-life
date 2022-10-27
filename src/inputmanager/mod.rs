@@ -1,5 +1,5 @@
-mod axis;
-mod bindings;
+pub mod axis;
+pub mod bindings;
 
 #[cfg(test)]
 mod test {

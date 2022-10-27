@@ -3,6 +3,7 @@ use std::time::Duration;
 use console_engine::KeyCode;
 
 use crate::resources::inputs::{Direction, Inputs};
+use crate::resources::axis_inputs::AxisInputs;
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
 use crate::systems::reset_input::reset_inputs;
@@ -167,3 +168,22 @@ fn system_can_reset_inputs() {
     assert_eq!(false, key_down);
 }
 
+#[test]
+fn can_add_axis_inputs() {
+    let mut test_env = initialize();
+    let input_resource = AxisInputs::new();
+
+    test_env.game.get_world_mut().insert_resource(input_resource);
+
+    test_env.game.add_stage_to_schedule(
+        "test",
+        SystemStage::parallel().with_system(reset_inputs),
+    );
+
+    let inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>();
+
+    match inputs {
+        Some(_) => assert!(true),
+        None => assert!(false),
+    }
+}

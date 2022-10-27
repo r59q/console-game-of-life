@@ -1,6 +1,7 @@
 use console_engine::KeyCode;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
+#[deprecated]
 pub enum MouseButton {
     LEFT,
     RIGHT,
@@ -8,30 +9,35 @@ pub enum MouseButton {
 }
 
 #[derive(Clone, Copy)]
+#[deprecated]
 pub enum Direction {
     UP,
     HELD,
     DOWN,
 }
 
+#[deprecated]
 pub struct MouseInputs {
     down: MouseButton,
     held: MouseButton,
     up: MouseButton,
 }
 
+#[deprecated]
 pub struct KeyboardInputs {
     down: KeyCode,
     held: KeyCode,
     up: KeyCode,
 }
 
+#[deprecated]
 pub struct Inputs {
     mouse_inputs: MouseInputs,
     mouse_positions: Option<(u32, u32)>,
     keyboard: KeyboardInputs,
 }
 
+#[deprecated]
 impl Inputs {
     pub fn new() -> Self {
         return Self {
