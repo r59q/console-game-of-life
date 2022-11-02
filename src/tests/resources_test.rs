@@ -1,4 +1,6 @@
 use std::time::Duration;
+use crate::inputmanager::axis::Axis;
+use crate::inputmanager::axis::Axis::Horizontal;
 
 use crate::resources::axis_inputs::AxisInputs;
 use crate::resources::render_targets::RenderTargets;
@@ -105,62 +107,58 @@ fn can_add_input_resource() {
     assert!(matches!(inputs, Some(_)));
 }
 
-// #[test]
-// fn can_read_from_input_resource() {
-//     let mut test_env = initialize();
+#[test]
+fn can_read_from_input_resource() {
+    let mut test_env = initialize();
 
-//     let input_resource = Inputs::new();
+    let input_resource = AxisInputs::new();
 
-//     test_env.game.get_world_mut().insert_resource(input_resource);
+    test_env.game.get_world_mut().insert_resource(input_resource);
 
-//     let inputs = test_env.game.get_world_ref().get_resource::<Inputs>().unwrap();
+    let inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>().unwrap();
 
-//     let key_down = inputs.get_key_down(KeyCode::Char('t'));
+    let input_value = inputs.get(Horizontal);
 
-//     assert_eq!(false, key_down)
-// }
+    assert_eq!(0., input_value)
+}
 
-// #[test]
-// fn can_set_input_resource() {
-//     let mut test_env = initialize();
-//     let input_resource = Inputs::new();
-//     test_env.game.get_world_mut().insert_resource(input_resource);
+#[test]
+fn can_set_input_resource() {
+    let mut test_env = initialize();
+    let input_resource = AxisInputs::new();
+    test_env.game.get_world_mut().insert_resource(input_resource);
 
-//     let mut inputs_mut = test_env.game.get_world_mut().get_resource_mut::<Inputs>().unwrap();
-//     inputs_mut.register_key_press(KeyCode::Char('k'), Direction::DOWN);
+    let mut inputs_mut = test_env.game.get_world_mut().get_resource_mut::<AxisInputs>().unwrap();
+    inputs_mut.set(Horizontal, 1.);
 
-//     let inputs = test_env.game.get_world_ref().get_resource::<Inputs>().unwrap();
-//     let key_down = inputs.get_key_down(KeyCode::Char('k'));
+    let inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>().unwrap();
+    assert_eq!(inputs.get(Horizontal), 1.);
+}
 
-//     assert_eq!(true, key_down);
-// }
+#[test]
+fn system_can_reset_axis_inputs() {
+    let mut test_env = initialize();
+    let input_resource = AxisInputs::new();
+    test_env.game.get_world_mut().insert_resource(input_resource);
 
-// #[test]
-// fn system_can_reset_inputs() {
-//     let mut test_env = initialize();
-//     let input_resource = Inputs::new();
-//     test_env.game.get_world_mut().insert_resource(input_resource);
+    test_env.game.add_stage_to_schedule(
+        "test",
+        SystemStage::parallel().with_system(reset_axial_inputs),
+    );
 
-//     test_env.game.add_stage_to_schedule(
-//         "test",
-//         SystemStage::parallel().with_system(reset_inputs),
-//     );
+    let mut inputs_mut = test_env.game.get_world_mut().get_resource_mut::<AxisInputs>().unwrap();
+    inputs_mut.set(Axis::Horizontal, 1.);
 
-//     let mut inputs_mut = test_env.game.get_world_mut().get_resource_mut::<Inputs>().unwrap();
-//     inputs_mut.register_key_press(KeyCode::Char('k'), Direction::DOWN);
+    let mut inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>().unwrap();
 
-//     let mut inputs = test_env.game.get_world_ref().get_resource::<Inputs>().unwrap();
-//     let mut key_down = inputs.get_key_down(KeyCode::Char('k'));
+    assert_eq!(inputs.get(Axis::Horizontal), 1.);
 
-//     assert_eq!(true, key_down);
+    test_env.game.run_schedule();
 
-//     test_env.game.run_schedule();
+    inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>().unwrap();
 
-//     inputs = test_env.game.get_world_ref().get_resource::<Inputs>().unwrap();
-//     key_down = inputs.get_key_down(KeyCode::Char('k'));
-
-//     assert_eq!(false, key_down);
-// }
+    assert_eq!(0., inputs.get(Axis::Horizontal));
+}
 
 #[test]
 fn can_add_axis_inputs() {
@@ -175,6 +173,5 @@ fn can_add_axis_inputs() {
     );
 
     let inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>();
-
     assert!(matches!(inputs, Some(_)));
 }

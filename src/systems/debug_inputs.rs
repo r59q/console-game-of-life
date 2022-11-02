@@ -1,9 +1,8 @@
 use bevy_ecs::prelude::Res;
-use console_engine::KeyCode;
 
 use crate::resources::axis_inputs::AxisInputs;
 
-pub fn debug_inputs(input: Res<AxisInputs>) {
+pub fn debug_inputs(_input: Res<AxisInputs>) {
 
     // let a = input.get_key_down_or_held(KeyCode::Char('a'));
     // let d = input.get_key_down_or_held(KeyCode::Char('d'));

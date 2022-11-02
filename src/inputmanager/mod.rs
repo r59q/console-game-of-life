@@ -2,7 +2,7 @@ pub mod axis;
 pub mod bindings;
 
 pub trait Input {
-    fn reset_inputs(&self);
+    fn reset_inputs(&mut self);
 }
 
 #[cfg(test)]

@@ -1,40 +1,49 @@
-use crate::inputmanager::{bindings::{AxialBinding, Bindings}, Input};
+use std::collections::HashMap;
+use crate::inputmanager::{Input};
+use crate::inputmanager::axis::Axis;
 
 pub struct AxisInputs {
-    bindings: Vec<Bindings>
+    inputs: HashMap<Axis, f64>,
 }
 
 impl AxisInputs {
     pub fn new() -> Self {
-        return Self { bindings: Vec::new() };
+        return Self { inputs: HashMap::new() };
     }
 
-    fn get(&self, axis: crate::inputmanager::axis::Axis) -> f64 {
+    pub fn get(&self, axis: Axis) -> f64 {
+        if self.inputs.contains_key(&axis) {
+            return self.inputs.get(&axis).unwrap().clone();
+        }
         return 0.;
     }
 
-    fn add_binding(&mut self, bindings: crate::inputmanager::bindings::Bindings) {
-        self.bindings.push(bindings);
-    }
-
-    fn get_bindings(&self, axis: crate::inputmanager::axis::Axis) -> Option<AxialBinding> {
-        todo!();
+    pub fn set(&mut self, axis: Axis, mut value: f64) {
+        if value < -1. {
+            value = -1.;
+        }
+        if value > 1. {
+            value = 1.;
+        }
+        self.inputs.entry(axis)
+            .and_modify(|val| *val = value)
+            .or_insert(value);
     }
 }
 
 impl Input for AxisInputs {
-    fn reset_inputs(&self) {
-        todo!()
+    fn reset_inputs(&mut self) {
+        for (_, val) in self.inputs.iter_mut() {
+            *val = 0.;
+        }
     }
 }
 
 #[cfg(test)]
 mod test {
-
-    use console_engine::KeyCode;
-
     use super::AxisInputs;
-    use crate::inputmanager::{axis::Axis, bindings::{self, AxialBinding}, self, Input};
+    use crate::inputmanager::{axis::Axis, Input};
+    use strum::{IntoEnumIterator};
 
     #[test]
     fn can_get_axial_input() {
@@ -45,48 +54,33 @@ mod test {
     }
 
     #[test]
-    fn can_add_bindings_to_axis_inputs() {
-        let mut axis_inputs = AxisInputs::new();
-        let bindings = bindings::Bindings::new();
-        axis_inputs.add_binding(bindings);
-        let horizontal_input_value = axis_inputs.get_bindings(Axis::Horizontal);
-        assert!(matches!(horizontal_input_value, Some(_)))
-    }
-
-    #[test]
-    fn adds_correct_key_binding() {
-        let mut axis_inputs = AxisInputs::new();
-        let mut bindings = bindings::Bindings::new();
-        let axial_binding 
-            = AxialBinding { positive: KeyCode::Char('x'), negative: KeyCode::Char('y')  };
-
-        bindings.bind_key_to_axis(
-            Axis::Horizontal, 
-            axial_binding.positive, 
-            axial_binding.negative);
-
-        axis_inputs.add_binding(bindings);
-        let horizontal_input_value = axis_inputs.get_bindings(Axis::Horizontal);
-        assert!(matches!(horizontal_input_value, Some(_)))
-    }
-
-    #[test]
     fn can_reset_input() {
         let mut axis_inputs = AxisInputs::new();
-        let mut bindings = bindings::Bindings::new();
-        let axial_binding 
-            = AxialBinding { positive: KeyCode::Char('x'), negative: KeyCode::Char('y')  };
-
-        bindings.bind_key_to_axis(
-            Axis::Horizontal, 
-            axial_binding.positive, 
-            axial_binding.negative);
-
-        axis_inputs.add_binding(bindings);
-        
+        axis_inputs.set(Axis::Horizontal, 1.);
+        axis_inputs.set(Axis::Vertical, -1.);
         axis_inputs.reset_inputs();
+        for axis in Axis::iter() {
+            assert_eq!(axis_inputs.get(axis), 0.);
+        }
+    }
 
-        let horizontal_input_value = axis_inputs.get(Axis::Horizontal);
-        assert_eq!(horizontal_input_value, 0.)
+    #[test]
+    fn can_set_input() {
+        let mut axis_inputs = AxisInputs::new();
+        axis_inputs.set(Axis::Horizontal, 1.);
+        axis_inputs.set(Axis::Vertical, -1.);
+
+        assert_eq!(axis_inputs.get(Axis::Horizontal), 1.);
+        assert_eq!(axis_inputs.get(Axis::Vertical), -1.);
+    }
+
+    #[test]
+    fn set_is_clamped() {
+        let mut axis_inputs = AxisInputs::new();
+        axis_inputs.set(Axis::Horizontal, 10.);
+        axis_inputs.set(Axis::Vertical, -10.);
+
+        assert_eq!(axis_inputs.get(Axis::Horizontal), 1.);
+        assert_eq!(axis_inputs.get(Axis::Vertical), -1.);
     }
 }

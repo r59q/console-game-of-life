@@ -19,9 +19,6 @@ impl Bindings {
     }
 
     pub fn get_axial_bindings(&mut self, axis: Axis) ->Vec<AxialBinding> {
-        if !self.axials.contains_key(&axis) {
-            Vec::<AxialBinding>::new();
-        }
         return self.axials.entry(axis).or_default().to_vec();
     }
 
