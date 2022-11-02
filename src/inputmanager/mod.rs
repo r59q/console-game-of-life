@@ -1,6 +1,10 @@
 pub mod axis;
 pub mod bindings;
 
+pub trait Input {
+    fn reset_inputs(&self);
+}
+
 #[cfg(test)]
 mod test {
     use console_engine::KeyCode;
