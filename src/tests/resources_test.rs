@@ -1,14 +1,19 @@
 use std::time::Duration;
 use console_engine::KeyCode;
+use console_engine::MouseButton;
 
 use crate::inputmanager::axis::Axis::Horizontal;
 use crate::inputmanager::axis::Axis::Vertical;
 
 use crate::resources::axis_inputs::AxisInputs;
 use crate::resources::bindings::Bindings;
+use crate::resources::mouse_inputs::MouseAction;
+use crate::resources::mouse_inputs::MouseInputs;
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
 use crate::systems::reset_axis_input::reset_axial_inputs;
+use crate::systems::reset_mouse_input;
+use crate::systems::reset_mouse_input::reset_mouse_inputs;
 use crate::systems::timing::timing_system;
 
 use super::*;
@@ -177,6 +182,42 @@ fn can_add_axis_inputs() {
 
     let inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>();
     assert!(matches!(inputs, Some(_)));
+}
+
+#[test]
+fn can_add_mouse_inputs() {
+    let mut test_env = initialize();
+    let input_resource = MouseInputs::new();
+
+    test_env.game.get_world_mut().insert_resource(input_resource);
+
+    let inputs = test_env.game.get_world_ref().get_resource::<MouseInputs>();
+    assert!(matches!(inputs, Some(_)));
+}
+
+#[test]
+fn system_can_reset_mouse_inputs() {
+    let mut test_env = initialize();
+    let input_resource = MouseInputs::new();
+
+    test_env.game.get_world_mut().insert_resource(input_resource);
+
+    test_env.game.add_stage_to_schedule(
+        "test",
+        SystemStage::parallel().with_system(reset_mouse_inputs),
+    );
+
+    let mut inputs = test_env.game.get_world_mut().get_resource_mut::<MouseInputs>().unwrap();
+
+    inputs.set_state(MouseButton::Left, MouseAction::Down, 1, 2);
+
+    test_env.game.run_schedule();
+
+    let mut hopefully_reset_state = test_env.game.get_world_mut().get_resource_mut::<MouseInputs>().unwrap();
+    
+    assert_eq!(hopefully_reset_state.get_position(), (1, 2));
+    let state = hopefully_reset_state.get_state(MouseButton::Left);
+    assert_eq!(state.get_action(), MouseAction::None);
 }
 
 #[test]

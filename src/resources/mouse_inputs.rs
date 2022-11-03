@@ -1,14 +1,18 @@
 use std::collections::HashMap;
 
+use bevy_ecs::schedule::StateError;
 use console_engine::MouseButton;
 
-#[derive(Clone, Copy, PartialEq, Eq)]
+use crate::inputmanager::Input;
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum MouseAction {
     None,
     Down,
 }
 
 
+#[derive(Debug)]
 pub struct MouseState {
     action: MouseAction
 }
@@ -18,7 +22,7 @@ impl MouseState {
         return MouseState { action: MouseAction::None  };
     }
 
-    fn get_action(&self) -> MouseAction {
+    pub fn get_action(&self) -> MouseAction {
         return self.action;
     }
 
@@ -27,6 +31,7 @@ impl MouseState {
     }
 }
 
+#[derive(Debug)]
 pub struct MouseInputs {
     inputs: HashMap<MouseButton, MouseState>,
     position: (u32, u32)
@@ -45,11 +50,23 @@ impl MouseInputs {
         state.action = action;
         self.position = (x, y)
     }
+
+    pub(crate) fn get_position(&self) -> (u32, u32) {
+        return self.position;
+    }
+}
+
+impl Input for MouseInputs {
+    fn reset_inputs(&mut self) {
+        self.inputs = Self::new().inputs;
+    }
 }
 
 #[cfg(test)]
 mod test {
     use console_engine::MouseButton;
+
+    use crate::inputmanager::Input;
 
     use super::{MouseInputs, MouseState, MouseAction};
 
@@ -89,5 +106,29 @@ mod test {
         let action: MouseAction = left_state.get_action();
         assert!(matches!(action, MouseAction::Down));
         assert_eq!(binding.position, (2, 3))
+    }
+
+    #[test]
+    fn can_reset_inputs() {
+        let left_button = MouseButton::Left;
+        let mut binding = MouseInputs::new();
+
+        binding.set_state(left_button, MouseAction::Down, 2, 3);
+
+        let mut left_state: &MouseState = 
+            binding.get_state(left_button);
+
+        let mut action: MouseAction = left_state.get_action();
+        assert!(matches!(action, MouseAction::Down));
+        assert_eq!(binding.get_position(), (2, 3));
+
+        binding.reset_inputs();
+        left_state = 
+            binding.get_state(left_button);
+
+        action = left_state.get_action();
+        assert!(matches!(action, MouseAction::None));
+        assert_eq!(binding.get_position(), (2, 3));
+
     }
 }
