@@ -5,7 +5,7 @@ use crate::inputmanager::axis::Axis::Horizontal;
 use crate::inputmanager::axis::Axis::Vertical;
 
 use crate::resources::axis_inputs::AxisInputs;
-use crate::resources::key_bindings::KeyBindings;
+use crate::resources::bindings::Bindings;
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
 use crate::systems::reset_axis_input::reset_axial_inputs;
@@ -120,7 +120,7 @@ fn can_read_from_input_resource() {
 
     let inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>().unwrap();
 
-    let input_value = inputs.get(Horizontal);
+    let input_value = inputs.get(&Horizontal);
 
     assert_eq!(0., input_value)
 }
@@ -135,7 +135,7 @@ fn can_set_input_resource() {
     inputs_mut.set(Horizontal, 1.);
 
     let inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>().unwrap();
-    assert_eq!(inputs.get(Horizontal), 1.);
+    assert_eq!(inputs.get(&Horizontal), 1.);
 }
 
 #[test]
@@ -154,13 +154,13 @@ fn system_can_reset_axis_inputs() {
 
     let mut inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>().unwrap();
 
-    assert_eq!(inputs.get(Horizontal), 1.);
+    assert_eq!(inputs.get(&Horizontal), 1.);
 
     test_env.game.run_schedule();
 
     inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>().unwrap();
 
-    assert_eq!(0., inputs.get(Horizontal));
+    assert_eq!(0., inputs.get(&Horizontal));
 }
 
 #[test]
@@ -182,11 +182,11 @@ fn can_add_axis_inputs() {
 #[test]
 fn can_add_key_bindings() {
     let mut test_env = initialize();
-    let keybinding_resource = KeyBindings::new();
+    let keybinding_resource = Bindings::new();
 
     test_env.game.get_world_mut().insert_resource(keybinding_resource);
 
-    let inputs = test_env.game.get_world_ref().get_resource::<KeyBindings>();
+    let inputs = test_env.game.get_world_ref().get_resource::<Bindings>();
     assert!(matches!(inputs, Some(_)));
 }
 
@@ -194,7 +194,7 @@ fn can_add_key_bindings() {
 #[test]
 fn can_add_key_to_key_bindings() {
     let mut test_env = initialize();
-    let mut keybinding_resource = KeyBindings::new();
+    let mut keybinding_resource = Bindings::new();
 
     keybinding_resource.bind_key_to_axis(
         Horizontal, 
@@ -204,7 +204,7 @@ fn can_add_key_to_key_bindings() {
 
     test_env.game.get_world_mut().insert_resource(keybinding_resource);
 
-    let inputs = test_env.game.get_world_mut().get_resource_mut::<KeyBindings>();
+    let inputs = test_env.game.get_world_mut().get_resource_mut::<Bindings>();
     assert!(matches!(inputs, Some(_)));
     let mut keybindings = inputs.unwrap();
 

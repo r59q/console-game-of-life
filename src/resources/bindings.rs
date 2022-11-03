@@ -5,11 +5,11 @@ use console_engine::KeyCode;
 use crate::inputmanager::{axis::Axis, axial_binding::AxialBinding};
 
 
-pub struct KeyBindings {
+pub struct Bindings {
     axials: HashMap<Axis, Vec<AxialBinding>>
 }
 
-impl KeyBindings {
+impl Bindings {
     pub fn new() -> Self {
         Self { axials: HashMap::new() }
     }
@@ -29,9 +29,9 @@ impl KeyBindings {
 mod test {
     use console_engine::KeyCode;
 
-    use crate::inputmanager::{axis::Axis, axial_binding};
+    use crate::inputmanager::axis::Axis;
 
-    use super::KeyBindings;
+    use super::Bindings;
 
 
     #[test]
@@ -42,31 +42,31 @@ mod test {
 
     #[test]
     fn has_key_bindings() {
-        let _keybindings = KeyBindings::new();
+        let _keybindings = Bindings::new();
     }
 
     #[test]
     fn has_key_horizontal_bindings() {
-        let mut keybindings = KeyBindings::new();
+        let mut keybindings = Bindings::new();
         let _horizontal = keybindings.get_axial_bindings(Axis::Horizontal);
     }
 
     #[test]
     fn has_bind_axial_key_method() {
-        let mut keybindings = KeyBindings::new();
+        let mut keybindings = Bindings::new();
         keybindings.bind_key_to_axis(Axis::Horizontal, KeyCode::Char('d'),KeyCode::Char('a'));
     }
 
     #[test]
     fn can_add_new_key_binding() {
-        let mut keybindings = KeyBindings::new();
+        let mut keybindings = Bindings::new();
         keybindings.bind_key_to_axis(Axis::Horizontal, KeyCode::Char('d'),KeyCode::Char('a'));
         assert_eq!(1, keybindings.get_axial_bindings(Axis::Horizontal).len());
     }
 
     #[test]
     fn can_add_new_correct_binding() {
-        let mut keybindings = KeyBindings::new();
+        let mut keybindings = Bindings::new();
 
         keybindings.bind_key_to_axis(
             Axis::Horizontal, 

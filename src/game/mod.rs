@@ -4,6 +4,7 @@ use bevy_ecs::world::World;
 use console_engine::{ConsoleEngine, KeyCode};
 use console_engine::pixel::pxl;
 
+use crate::inputmanager;
 use crate::resources::render_targets::RenderTargets;
 
 pub struct Game {
@@ -61,6 +62,10 @@ impl Game {
 
     fn deinit(&mut self) {
         self.is_started = false;
+    }
+
+    pub fn get_engine(&mut self) -> &ConsoleEngine {
+        return &mut self.engine;
     }
 
     // Todo: Refactor this
@@ -154,8 +159,7 @@ impl Game {
     }
 
     fn game_logic(&mut self) {
-        self.capture_inputs();
-
+        inputmanager::capture_inputs::capture_inputs(self);
         self.run_schedule();
     }
 

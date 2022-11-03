@@ -3,7 +3,7 @@ use bevy_ecs::prelude::SystemStage;
 use components::{position::Position, velocity::Velocity};
 use game::Game;
 use resources::axis_inputs::AxisInputs;
-use resources::key_bindings::KeyBindings;
+use resources::bindings::Bindings;
 use systems::reset_axis_input::reset_axial_inputs;
 use crate::components::rendering_character::RenderingCharacter;
 
@@ -29,11 +29,21 @@ fn main() {
         .insert(Velocity { x: 3., y: 1. })
         .insert(RenderingCharacter { character:'@' });
 
+    add_resources(&mut game);
+
+    stage_systems(&mut game);
+
+    game.start();
+}
+
+fn add_resources(game: &mut Game) {
     game.get_world_mut().insert_resource(Timer::new());
     game.get_world_mut().insert_resource(RenderTargets::new());
     game.get_world_mut().insert_resource(AxisInputs::new());
-    game.get_world_mut().insert_resource(KeyBindings::new());
+    game.get_world_mut().insert_resource(Bindings::new());
+}
 
+fn stage_systems(game: &mut Game) {
     game.add_stage_to_schedule("timing", SystemStage::parallel()
         .with_system(timing_system),
     );
@@ -48,7 +58,6 @@ fn main() {
     game.add_stage_to_schedule("post-render", SystemStage::single_threaded()
         .with_system(reset_axial_inputs),
     );
-    game.start();
 }
 
 #[cfg(test)]

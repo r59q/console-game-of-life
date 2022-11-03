@@ -2,18 +2,16 @@ use std::collections::HashMap;
 use crate::inputmanager::{Input};
 use crate::inputmanager::axis::Axis;
 
-pub struct AxisInputs {
-    inputs: HashMap<Axis, f64>,
-}
+pub struct AxisInputs(HashMap<Axis, f64>);
 
 impl AxisInputs {
     pub fn new() -> Self {
-        return Self { inputs: HashMap::new() };
+        return Self(HashMap::new());
     }
 
-    pub fn get(&self, axis: Axis) -> f64 {
-        if self.inputs.contains_key(&axis) {
-            return self.inputs.get(&axis).unwrap().clone();
+    pub fn get(&self, axis: &Axis) -> f64 {
+        if self.0.contains_key(axis) {
+            return self.0.get(axis).unwrap().clone();
         }
         return 0.;
     }
@@ -25,7 +23,7 @@ impl AxisInputs {
         if value > 1. {
             value = 1.;
         }
-        self.inputs.entry(axis)
+        self.0.entry(axis)
             .and_modify(|val| *val = value)
             .or_insert(value);
     }
@@ -33,7 +31,7 @@ impl AxisInputs {
 
 impl Input for AxisInputs {
     fn reset_inputs(&mut self) {
-        for (_, val) in self.inputs.iter_mut() {
+        for (_, val) in self.0.iter_mut() {
             *val = 0.;
         }
     }
@@ -49,7 +47,7 @@ mod test {
     fn can_get_axial_input() {
         let axis_inputs = AxisInputs::new();
 
-        let horizontal_input_value = axis_inputs.get(Axis::Horizontal);
+        let horizontal_input_value = axis_inputs.get(&Axis::Horizontal);
         assert_eq!(horizontal_input_value, 0.);
     }
 
@@ -60,7 +58,7 @@ mod test {
         axis_inputs.set(Axis::Vertical, -1.);
         axis_inputs.reset_inputs();
         for axis in Axis::iter() {
-            assert_eq!(axis_inputs.get(axis), 0.);
+            assert_eq!(axis_inputs.get(&axis), 0.);
         }
     }
 
@@ -70,8 +68,8 @@ mod test {
         axis_inputs.set(Axis::Horizontal, 1.);
         axis_inputs.set(Axis::Vertical, -1.);
 
-        assert_eq!(axis_inputs.get(Axis::Horizontal), 1.);
-        assert_eq!(axis_inputs.get(Axis::Vertical), -1.);
+        assert_eq!(axis_inputs.get(&Axis::Horizontal), 1.);
+        assert_eq!(axis_inputs.get(&Axis::Vertical), -1.);
     }
 
     #[test]
@@ -80,7 +78,7 @@ mod test {
         axis_inputs.set(Axis::Horizontal, 10.);
         axis_inputs.set(Axis::Vertical, -10.);
 
-        assert_eq!(axis_inputs.get(Axis::Horizontal), 1.);
-        assert_eq!(axis_inputs.get(Axis::Vertical), -1.);
+        assert_eq!(axis_inputs.get(&Axis::Horizontal), 1.);
+        assert_eq!(axis_inputs.get(&Axis::Vertical), -1.);
     }
 }
