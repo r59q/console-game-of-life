@@ -1,14 +1,15 @@
 use std::collections::HashMap;
 
-use bevy_ecs::schedule::StateError;
 use console_engine::MouseButton;
 
-use crate::inputmanager::Input;
+use crate::inputmanager::SharedInputBehaviour;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum MouseAction {
     None,
     Down,
+    Drag,
+    Up,
 }
 
 
@@ -47,7 +48,7 @@ impl MouseInputs {
 
     pub(crate) fn set_state(&mut self, button: MouseButton, action: MouseAction, x: u32, y: u32) {
         let state = self.inputs.entry(button).or_insert(MouseState::new());
-        state.action = action;
+        state.set_action(action);
         self.position = (x, y)
     }
 
@@ -56,7 +57,7 @@ impl MouseInputs {
     }
 }
 
-impl Input for MouseInputs {
+impl SharedInputBehaviour for MouseInputs {
     fn reset_inputs(&mut self) {
         self.inputs = Self::new().inputs;
     }
@@ -66,7 +67,7 @@ impl Input for MouseInputs {
 mod test {
     use console_engine::MouseButton;
 
-    use crate::inputmanager::Input;
+    use crate::inputmanager::SharedInputBehaviour;
 
     use super::{MouseInputs, MouseState, MouseAction};
 
@@ -78,7 +79,7 @@ mod test {
     #[test]
     fn can_get_left_mouse_state() {
         let left_button = MouseButton::Left;
-        let left_state: &MouseState = 
+        let _left_state: &MouseState =
             MouseInputs::new().get_state(left_button);
     }
 
