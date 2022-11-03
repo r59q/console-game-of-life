@@ -4,6 +4,7 @@ use console_engine::MouseButton;
 
 use crate::inputmanager::axis::Axis::Horizontal;
 use crate::inputmanager::axis::Axis::Vertical;
+use crate::inputmanager::input_types::InputType::Key;
 
 use crate::resources::axis_inputs::AxisInputs;
 use crate::resources::bindings::Bindings;
@@ -239,8 +240,8 @@ fn can_add_key_to_key_bindings() {
 
     keybinding_resource.bind_key_to_axis(
         Horizontal, 
-        KeyCode::Char('d'), 
-        KeyCode::Char('a')
+        Key(KeyCode::Char('d')),
+        Key(KeyCode::Char('a'))
     );
 
     test_env.game.get_world_mut().insert_resource(keybinding_resource);

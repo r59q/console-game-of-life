@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use console_engine::KeyCode;
 
 use crate::inputmanager::{axis::Axis, axial_binding::AxialBinding};
-
+use crate::inputmanager::input_types::InputType;
 
 pub struct Bindings {
     axials: HashMap<Axis, Vec<AxialBinding>>
@@ -18,7 +18,7 @@ impl Bindings {
         return self.axials.entry(axis).or_default().to_vec();
     }
 
-    pub fn bind_key_to_axis(&mut self, axis: Axis, positive_key: KeyCode, negative_key: KeyCode) {
+    pub fn bind_key_to_axis(&mut self, axis: Axis, positive_key: InputType, negative_key: InputType) {
         let vec = self.axials.entry(axis).or_insert(Vec::<AxialBinding>::new());
         vec.push(AxialBinding {positive: positive_key, negative: negative_key})
     }
@@ -30,6 +30,7 @@ mod test {
     use console_engine::KeyCode;
 
     use crate::inputmanager::axis::Axis;
+    use crate::inputmanager::input_types::InputType::Key;
 
     use super::Bindings;
 
@@ -54,13 +55,13 @@ mod test {
     #[test]
     fn has_bind_axial_key_method() {
         let mut keybindings = Bindings::new();
-        keybindings.bind_key_to_axis(Axis::Horizontal, KeyCode::Char('d'),KeyCode::Char('a'));
+        keybindings.bind_key_to_axis(Axis::Horizontal, Key(KeyCode::Char('d')),Key(KeyCode::Char('a')));
     }
 
     #[test]
     fn can_add_new_key_binding() {
         let mut keybindings = Bindings::new();
-        keybindings.bind_key_to_axis(Axis::Horizontal, KeyCode::Char('d'),KeyCode::Char('a'));
+        keybindings.bind_key_to_axis(Axis::Horizontal, Key(KeyCode::Char('d')),Key(KeyCode::Char('a')));
         assert_eq!(1, keybindings.get_axial_bindings(Axis::Horizontal).len());
     }
 
@@ -70,13 +71,13 @@ mod test {
 
         keybindings.bind_key_to_axis(
             Axis::Horizontal, 
-            KeyCode::Char('d'),
-            KeyCode::Char('a')
+            Key(KeyCode::Char('d')),
+            Key(KeyCode::Char('a'))
         );
         keybindings.bind_key_to_axis(
             Axis::Vertical, 
-            KeyCode::Char('w'),
-            KeyCode::Char('s')
+            Key(KeyCode::Char('w')),
+            Key(KeyCode::Char('s'))
         );
         let binding_horizontal = keybindings.get_axial_bindings(Axis::Horizontal);
         let binding_vertical = keybindings.get_axial_bindings(Axis::Vertical);
@@ -85,16 +86,20 @@ mod test {
 
         match opt_binding_horizontal {
             Some(binding) => {
-                assert_eq!(binding.positive, KeyCode::Char('d'));
-                assert_eq!(binding.negative, KeyCode::Char('a'))
+                let pos = binding.positive;
+                let neg = binding.negative;
+                assert!(matches!(pos, Key(KeyCode::Char('d'))));
+                assert!(matches!(neg, Key(KeyCode::Char('a'))));
             },
             None => assert!(false),
         }
 
         match opt_binding_vertical {
             Some(binding) => {
-                assert_eq!(binding.positive, KeyCode::Char('w'));
-                assert_eq!(binding.negative, KeyCode::Char('s'))
+                let pos = binding.positive;
+                let neg = binding.negative;
+                assert!(matches!(pos, Key(KeyCode::Char('w'))));
+                assert!(matches!(neg, Key(KeyCode::Char('s'))));
             },
             None => assert!(false),
         }

@@ -1,8 +1,7 @@
-use console_engine::KeyCode;
-
+use crate::inputmanager::input_types::InputType;
 
 #[derive(Clone, Copy)]
 pub struct AxialBinding {
-    pub positive: KeyCode,
-    pub negative: KeyCode
+    pub positive: InputType,
+    pub negative: InputType
 }
