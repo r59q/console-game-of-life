@@ -3,6 +3,7 @@ use bevy_ecs::prelude::SystemStage;
 use components::{position::Position, velocity::Velocity};
 use game::Game;
 use resources::axis_inputs::AxisInputs;
+use resources::key_bindings::KeyBindings;
 use systems::reset_axis_input::reset_axial_inputs;
 use crate::components::rendering_character::RenderingCharacter;
 
@@ -31,6 +32,7 @@ fn main() {
     game.get_world_mut().insert_resource(Timer::new());
     game.get_world_mut().insert_resource(RenderTargets::new());
     game.get_world_mut().insert_resource(AxisInputs::new());
+    game.get_world_mut().insert_resource(KeyBindings::new());
 
     game.add_stage_to_schedule("timing", SystemStage::parallel()
         .with_system(timing_system),

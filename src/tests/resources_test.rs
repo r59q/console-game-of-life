@@ -1,8 +1,11 @@
 use std::time::Duration;
-use crate::inputmanager::axis::Axis;
+use console_engine::KeyCode;
+
 use crate::inputmanager::axis::Axis::Horizontal;
+use crate::inputmanager::axis::Axis::Vertical;
 
 use crate::resources::axis_inputs::AxisInputs;
+use crate::resources::key_bindings::KeyBindings;
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
 use crate::systems::reset_axis_input::reset_axial_inputs;
@@ -147,17 +150,17 @@ fn system_can_reset_axis_inputs() {
     );
 
     let mut inputs_mut = test_env.game.get_world_mut().get_resource_mut::<AxisInputs>().unwrap();
-    inputs_mut.set(Axis::Horizontal, 1.);
+    inputs_mut.set(Horizontal, 1.);
 
     let mut inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>().unwrap();
 
-    assert_eq!(inputs.get(Axis::Horizontal), 1.);
+    assert_eq!(inputs.get(Horizontal), 1.);
 
     test_env.game.run_schedule();
 
     inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>().unwrap();
 
-    assert_eq!(0., inputs.get(Axis::Horizontal));
+    assert_eq!(0., inputs.get(Horizontal));
 }
 
 #[test]
@@ -174,4 +177,43 @@ fn can_add_axis_inputs() {
 
     let inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>();
     assert!(matches!(inputs, Some(_)));
+}
+
+#[test]
+fn can_add_key_bindings() {
+    let mut test_env = initialize();
+    let keybinding_resource = KeyBindings::new();
+
+    test_env.game.get_world_mut().insert_resource(keybinding_resource);
+
+    let inputs = test_env.game.get_world_ref().get_resource::<KeyBindings>();
+    assert!(matches!(inputs, Some(_)));
+}
+
+
+#[test]
+fn can_add_key_to_key_bindings() {
+    let mut test_env = initialize();
+    let mut keybinding_resource = KeyBindings::new();
+
+    keybinding_resource.bind_key_to_axis(
+        Horizontal, 
+        KeyCode::Char('d'), 
+        KeyCode::Char('a')
+    );
+
+    test_env.game.get_world_mut().insert_resource(keybinding_resource);
+
+    let inputs = test_env.game.get_world_mut().get_resource_mut::<KeyBindings>();
+    assert!(matches!(inputs, Some(_)));
+    let mut keybindings = inputs.unwrap();
+
+    let horizontals = keybindings.get_axial_bindings(Horizontal);
+
+    assert_eq!(horizontals.len(), 1);
+
+    let verticals = keybindings.get_axial_bindings(Vertical);
+    assert_eq!(verticals.len(), 0);
+
+
 }
