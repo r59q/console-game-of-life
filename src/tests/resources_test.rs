@@ -1,11 +1,19 @@
 use std::time::Duration;
-
 use console_engine::KeyCode;
+use console_engine::MouseButton;
 
-use crate::resources::inputs::{Direction, Inputs};
+use crate::inputmanager::axis::Axis::Horizontal;
+use crate::inputmanager::axis::Axis::Vertical;
+
+use crate::resources::axis_inputs::AxisInputs;
+use crate::resources::bindings::Bindings;
+use crate::resources::mouse_inputs::MouseAction;
+use crate::resources::mouse_inputs::MouseInputs;
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
-use crate::systems::reset_input::reset_inputs;
+use crate::systems::reset_axis_input::reset_axial_inputs;
+use crate::systems::reset_mouse_input;
+use crate::systems::reset_mouse_input::reset_mouse_inputs;
 use crate::systems::timing::timing_system;
 
 use super::*;
@@ -98,72 +106,155 @@ fn can_add_rendering_target() {
 fn can_add_input_resource() {
     let mut test_env = initialize();
 
-    let input_resource = Inputs::new();
+    let input_resource = AxisInputs::new();
 
     test_env.game.get_world_mut().insert_resource(input_resource);
 
-    let inputs = test_env.game.get_world_ref().get_resource::<Inputs>();
+    let inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>();
 
-    match inputs {
-        None => { assert!(false) }
-        Some(_) => { assert!(true) }
-    }
+    assert!(matches!(inputs, Some(_)));
 }
 
 #[test]
 fn can_read_from_input_resource() {
     let mut test_env = initialize();
 
-    let input_resource = Inputs::new();
+    let input_resource = AxisInputs::new();
 
     test_env.game.get_world_mut().insert_resource(input_resource);
 
-    let inputs = test_env.game.get_world_ref().get_resource::<Inputs>().unwrap();
+    let inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>().unwrap();
 
-    let key_down = inputs.get_key_down(KeyCode::Char('t'));
+    let input_value = inputs.get(&Horizontal);
 
-    assert_eq!(false, key_down)
+    assert_eq!(0., input_value)
 }
 
 #[test]
 fn can_set_input_resource() {
     let mut test_env = initialize();
-    let input_resource = Inputs::new();
+    let input_resource = AxisInputs::new();
     test_env.game.get_world_mut().insert_resource(input_resource);
 
-    let mut inputs_mut = test_env.game.get_world_mut().get_resource_mut::<Inputs>().unwrap();
-    inputs_mut.register_key_press(KeyCode::Char('k'), Direction::DOWN);
+    let mut inputs_mut = test_env.game.get_world_mut().get_resource_mut::<AxisInputs>().unwrap();
+    inputs_mut.set(Horizontal, 1.);
 
-    let inputs = test_env.game.get_world_ref().get_resource::<Inputs>().unwrap();
-    let key_down = inputs.get_key_down(KeyCode::Char('k'));
-
-    assert_eq!(true, key_down);
+    let inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>().unwrap();
+    assert_eq!(inputs.get(&Horizontal), 1.);
 }
 
 #[test]
-fn system_can_reset_inputs() {
+fn system_can_reset_axis_inputs() {
     let mut test_env = initialize();
-    let input_resource = Inputs::new();
+    let input_resource = AxisInputs::new();
     test_env.game.get_world_mut().insert_resource(input_resource);
 
     test_env.game.add_stage_to_schedule(
         "test",
-        SystemStage::parallel().with_system(reset_inputs),
+        SystemStage::parallel().with_system(reset_axial_inputs),
     );
 
-    let mut inputs_mut = test_env.game.get_world_mut().get_resource_mut::<Inputs>().unwrap();
-    inputs_mut.register_key_press(KeyCode::Char('k'), Direction::DOWN);
+    let mut inputs_mut = test_env.game.get_world_mut().get_resource_mut::<AxisInputs>().unwrap();
+    inputs_mut.set(Horizontal, 1.);
 
-    let mut inputs = test_env.game.get_world_ref().get_resource::<Inputs>().unwrap();
-    let mut key_down = inputs.get_key_down(KeyCode::Char('k'));
+    let mut inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>().unwrap();
 
-    assert_eq!(true, key_down);
+    assert_eq!(inputs.get(&Horizontal), 1.);
 
     test_env.game.run_schedule();
 
-    inputs = test_env.game.get_world_ref().get_resource::<Inputs>().unwrap();
-    key_down = inputs.get_key_down(KeyCode::Char('k'));
+    inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>().unwrap();
 
-    assert_eq!(false, key_down);
+    assert_eq!(0., inputs.get(&Horizontal));
 }
 
+#[test]
+fn can_add_axis_inputs() {
+    let mut test_env = initialize();
+    let input_resource = AxisInputs::new();
+
+    test_env.game.get_world_mut().insert_resource(input_resource);
+
+    test_env.game.add_stage_to_schedule(
+        "test",
+        SystemStage::parallel().with_system(reset_axial_inputs),
+    );
+
+    let inputs = test_env.game.get_world_ref().get_resource::<AxisInputs>();
+    assert!(matches!(inputs, Some(_)));
+}
+
+#[test]
+fn can_add_mouse_inputs() {
+    let mut test_env = initialize();
+    let input_resource = MouseInputs::new();
+
+    test_env.game.get_world_mut().insert_resource(input_resource);
+
+    let inputs = test_env.game.get_world_ref().get_resource::<MouseInputs>();
+    assert!(matches!(inputs, Some(_)));
+}
+
+#[test]
+fn system_can_reset_mouse_inputs() {
+    let mut test_env = initialize();
+    let input_resource = MouseInputs::new();
+
+    test_env.game.get_world_mut().insert_resource(input_resource);
+
+    test_env.game.add_stage_to_schedule(
+        "test",
+        SystemStage::parallel().with_system(reset_mouse_inputs),
+    );
+
+    let mut inputs = test_env.game.get_world_mut().get_resource_mut::<MouseInputs>().unwrap();
+
+    inputs.set_state(MouseButton::Left, MouseAction::Down, 1, 2);
+
+    test_env.game.run_schedule();
+
+    let mut hopefully_reset_state = test_env.game.get_world_mut().get_resource_mut::<MouseInputs>().unwrap();
+    
+    assert_eq!(hopefully_reset_state.get_position(), (1, 2));
+    let state = hopefully_reset_state.get_state(MouseButton::Left);
+    assert_eq!(state.get_action(), MouseAction::None);
+}
+
+#[test]
+fn can_add_key_bindings() {
+    let mut test_env = initialize();
+    let keybinding_resource = Bindings::new();
+
+    test_env.game.get_world_mut().insert_resource(keybinding_resource);
+
+    let inputs = test_env.game.get_world_ref().get_resource::<Bindings>();
+    assert!(matches!(inputs, Some(_)));
+}
+
+
+#[test]
+fn can_add_key_to_key_bindings() {
+    let mut test_env = initialize();
+    let mut keybinding_resource = Bindings::new();
+
+    keybinding_resource.bind_key_to_axis(
+        Horizontal, 
+        KeyCode::Char('d'), 
+        KeyCode::Char('a')
+    );
+
+    test_env.game.get_world_mut().insert_resource(keybinding_resource);
+
+    let inputs = test_env.game.get_world_mut().get_resource_mut::<Bindings>();
+    assert!(matches!(inputs, Some(_)));
+    let mut keybindings = inputs.unwrap();
+
+    let horizontals = keybindings.get_axial_bindings(Horizontal);
+
+    assert_eq!(horizontals.len(), 1);
+
+    let verticals = keybindings.get_axial_bindings(Vertical);
+    assert_eq!(verticals.len(), 0);
+
+
+}

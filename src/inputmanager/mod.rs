@@ -1,27 +1,9 @@
-use console_engine::{ConsoleEngine, KeyCode};
+use crate::game::Game;
 
-pub enum Axis {
-    Horizontal,
-    Vertical
-}
-
-pub struct MovementDelta {
-    dx: i32,
-    dy: i32
-}
-
-pub fn get_axis(axis: Axis, engine: &ConsoleEngine) -> i32 {
-    match axis {
-        Axis::Horizontal => 
-        if engine.is_key_pressed(KeyCode::Char('a')) {
-            return -1;
-        } else if engine.is_key_pressed(KeyCode::Char('d')) {
-            return 1;
-        } else { return 0; }
-        Axis::Vertical => if engine.is_key_pressed(KeyCode::Char('w')) {
-            return -1;
-        } else if engine.is_key_pressed(KeyCode::Char('s')) {
-            return 1;
-        } else { return 0; },
-    }
+pub mod axis;
+pub mod axial_binding;
+pub mod capture_inputs;
+pub mod input_types;
+pub trait SharedInputBehaviour {
+    fn reset_inputs(&mut self);
 }
