@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use console_engine::MouseButton;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
-enum MouseAction {
+pub enum MouseAction {
     None,
     Down,
 }
@@ -12,7 +12,7 @@ enum MouseAction {
 pub struct MouseState {
     action: MouseAction
 }
-
+// todo: Mouse state may be too much. Might be replaced with just the action.
 impl MouseState {
     fn new() -> Self {
         return MouseState { action: MouseAction::None  };
@@ -28,19 +28,22 @@ impl MouseState {
 }
 
 pub struct MouseInputs {
-    inputs: HashMap<MouseButton, MouseState>
+    inputs: HashMap<MouseButton, MouseState>,
+    position: (u32, u32)
 }
 impl MouseInputs {
     pub(crate) fn new() -> MouseInputs {
-        return MouseInputs { inputs: HashMap::new() }
+        return MouseInputs { inputs: HashMap::new(), position: (0,0) }
     }
 
     pub(crate) fn get_state(&mut self, mouse_button: MouseButton) -> &MouseState {
         return self.inputs.entry(mouse_button).or_insert(MouseState::new());
     }
 
-    pub(crate) fn set_state(&self, button: MouseButton, x: u32, y: u32) {
-        todo!()
+    pub(crate) fn set_state(&mut self, button: MouseButton, action: MouseAction, x: u32, y: u32) {
+        let state = self.inputs.entry(button).or_insert(MouseState::new());
+        state.action = action;
+        self.position = (x, y)
     }
 }
 
@@ -74,15 +77,17 @@ mod test {
     }
 
     #[test]
-    fn can_change_action() {
+    fn can_set_action() {
         let left_button = MouseButton::Left;
         let mut binding = MouseInputs::new();
+
+        binding.set_state(left_button, MouseAction::Down, 2, 3);
+
         let left_state: &MouseState = 
             binding.get_state(left_button);
 
-            binding.set_state(left_button, 2, 3);
-
         let action: MouseAction = left_state.get_action();
-        assert!(matches!(action, MouseAction::None));
+        assert!(matches!(action, MouseAction::Down));
+        assert_eq!(binding.position, (2, 3))
     }
 }
