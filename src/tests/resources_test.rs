@@ -7,10 +7,10 @@ use crate::input_manager::axis::Axis::Vertical;
 use crate::input_manager::input_action::InputAction;
 use crate::input_manager::input_types::InputType::Key;
 
-use crate::resources::axis_inputs::AxisInputs;
-use crate::resources::bindings::Bindings;
-use crate::resources::button_inputs::ButtonInputs;
-use crate::resources::mouse_inputs::MouseInputs;
+use crate::resources::inputs::axis_inputs::AxisInputs;
+use crate::resources::inputs::input_bindings::InputBindings;
+use crate::resources::inputs::button_inputs::ButtonInputs;
+use crate::resources::inputs::mouse_inputs::MouseInputs;
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
 use crate::systems::reset_axis_input::reset_axial_inputs;
@@ -223,11 +223,11 @@ fn system_can_reset_mouse_inputs() {
 #[test]
 fn can_add_key_bindings() {
     let mut test_env = initialize();
-    let keybinding_resource = Bindings::new();
+    let keybinding_resource = InputBindings::new();
 
     test_env.game.get_world_mut().insert_resource(keybinding_resource);
 
-    let inputs = test_env.game.get_world_ref().get_resource::<Bindings>();
+    let inputs = test_env.game.get_world_ref().get_resource::<InputBindings>();
     assert!(matches!(inputs, Some(_)));
 }
 
@@ -235,7 +235,7 @@ fn can_add_key_bindings() {
 #[test]
 fn can_add_key_to_key_bindings() {
     let mut test_env = initialize();
-    let mut keybinding_resource = Bindings::new();
+    let mut keybinding_resource = InputBindings::new();
 
     keybinding_resource.bind_to_axis(
         Horizontal,
@@ -245,7 +245,7 @@ fn can_add_key_to_key_bindings() {
 
     test_env.game.get_world_mut().insert_resource(keybinding_resource);
 
-    let inputs = test_env.game.get_world_mut().get_resource_mut::<Bindings>();
+    let inputs = test_env.game.get_world_mut().get_resource_mut::<InputBindings>();
     assert!(matches!(inputs, Some(_)));
     let keybindings = inputs.unwrap();
 
