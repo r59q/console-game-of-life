@@ -4,10 +4,8 @@ use bevy_ecs::world::World;
 use console_engine::{ConsoleEngine, KeyCode};
 use console_engine::pixel::pxl;
 
-use crate::inputmanager;
+use crate::input_manager;
 use crate::resources::bindings::Bindings;
-use crate::resources::button_inputs::ButtonInputs;
-use crate::resources::mouse_inputs::MouseInputs;
 use crate::resources::render_targets::RenderTargets;
 
 pub struct Game {
@@ -76,9 +74,9 @@ impl Game {
         if let None = bindings_opt {
             panic!("There are no bindings")
         }
-        inputmanager::capture_inputs::capture_mouse_inputs(self);
-        inputmanager::capture_inputs::capture_button_inputs(self);
-        inputmanager::capture_inputs::capture_axial_inputs(self);
+        input_manager::capture_inputs::capture_mouse_inputs(self);
+        input_manager::capture_inputs::capture_button_inputs(self);
+        input_manager::capture_inputs::capture_axial_inputs(self);
         self.run_schedule();
     }
 

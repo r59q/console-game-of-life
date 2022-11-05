@@ -3,8 +3,8 @@ use console_engine::MouseButton;
 
 use strum::IntoEnumIterator;
 
-use crate::inputmanager::axis::Axis;
-use crate::inputmanager::buttons::Button::{Buy, Fire1, Fire2};
+use crate::input_manager::axis::Axis;
+use crate::input_manager::buttons::Button::{Buy};
 use crate::resources::axis_inputs::AxisInputs;
 use crate::resources::button_inputs::ButtonInputs;
 use crate::resources::mouse_inputs::MouseInputs;
@@ -17,7 +17,7 @@ pub fn debugger(axial_inputs: Res<AxisInputs>, mut mouse_inputs: ResMut<MouseInp
         print!("{:?}", val);
     }
 
-    let mut state = mouse_inputs.get_state(MouseButton::Left);
+    let state = mouse_inputs.get_state(MouseButton::Left);
     print!("\t {:?}", state);
 
     print!("\t {:?}", mouse_inputs.get_position());

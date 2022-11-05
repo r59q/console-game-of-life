@@ -1,5 +1,3 @@
-use crate::game::Game;
-
 pub mod axis;
 pub mod axial_binding;
 pub mod button_binding;

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
-use crate::inputmanager::{SharedInputBehaviour};
-use crate::inputmanager::axis::Axis;
+use crate::input_manager::{SharedInputBehaviour};
+use crate::input_manager::axis::Axis;
 
 pub struct AxisInputs(HashMap<Axis, f64>);
 
@@ -40,7 +40,7 @@ impl SharedInputBehaviour for AxisInputs {
 #[cfg(test)]
 mod test {
     use super::AxisInputs;
-    use crate::inputmanager::{axis::Axis, SharedInputBehaviour};
+    use crate::input_manager::{axis::Axis, SharedInputBehaviour};
     use strum::{IntoEnumIterator};
 
     #[test]

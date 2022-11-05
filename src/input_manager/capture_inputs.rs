@@ -1,33 +1,14 @@
-use bevy_ecs::change_detection::Mut;
-use bevy_ecs::schedule::ShouldRun::No;
 use console_engine::{ConsoleEngine, MouseButton};
 use crate::{game::Game, resources::mouse_inputs::{MouseInputs}};
-use crate::inputmanager::buttons::Button;
-use crate::inputmanager::input_action::InputAction;
+use crate::input_manager::buttons::Button;
+use crate::input_manager::input_action::InputAction;
 use crate::resources::bindings::Bindings;
 use strum::IntoEnumIterator;
-use crate::inputmanager::axis::Axis;
-use crate::inputmanager::button_binding::ButtonBinding;
-use crate::inputmanager::input_action::InputAction::{Down, Drag, Held, Up};
-use crate::inputmanager::input_types::InputType;
+use crate::input_manager::axis::Axis;
+use crate::input_manager::input_action::InputAction::{Down, Held, Up};
+use crate::input_manager::input_types::InputType;
 use crate::resources::axis_inputs::AxisInputs;
 use crate::resources::button_inputs::ButtonInputs;
-
-
-/*pub fn capture_inputs(game: &mut Game) {
-    let mouse_inputs_opt = game.get_world_mut().get_resource_mut::<MouseInputs>();
-    let engine = game.get_engine();
-    capture_mouse_inputs(engine, mouse_inputs_opt.unwrap());
-
-    let bindings_opt = game.get_world_mut().get_resource_mut::<Bindings>();
-    if let None = bindings_opt {
-        panic!("NO BINDINGS ARE SET!")
-    }
-
-    // capture_button_inputs(game, bindings_opt.unwrap())
-}
-
-*/
 
 fn handle_input(input: InputType, engine: &ConsoleEngine) -> InputAction {
     return match input {
@@ -44,13 +25,13 @@ fn handle_input(input: InputType, engine: &ConsoleEngine) -> InputAction {
             InputAction::None
         }
         InputType::Mouse(mouse_button) => {
-            if let Some((x, y)) = engine.get_mouse_press(mouse_button) {
+            if let Some((_, _)) = engine.get_mouse_press(mouse_button) {
                 return Down
             }
-            if let Some((x, y)) = engine.get_mouse_released(mouse_button) {
+            if let Some((_, _)) = engine.get_mouse_released(mouse_button) {
                 return Up
             }
-            if let Some((x, y)) = engine.get_mouse_held(mouse_button) {
+            if let Some((_, _)) = engine.get_mouse_held(mouse_button) {
                 return Held
             }
             InputAction::None
