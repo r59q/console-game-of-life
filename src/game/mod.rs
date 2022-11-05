@@ -4,8 +4,9 @@ use bevy_ecs::world::World;
 use console_engine::{ConsoleEngine, KeyCode};
 use console_engine::pixel::pxl;
 
-use crate::input_manager;
-use crate::resources::bindings::Bindings;
+use crate::input_manager::key_binding;
+use crate::prefabs::Prefab;
+use crate::resources::inputs::input_bindings::InputBindings;
 use crate::resources::render_targets::RenderTargets;
 
 pub struct Game {
@@ -34,6 +35,10 @@ impl Game {
 
     pub fn get_world_mut(&mut self) -> &mut World {
         return &mut self.world;
+    }
+
+    pub fn spawn_prefab(&mut self, prefab: Prefab) {
+        prefab(self.get_world_mut().spawn());
     }
 
     pub fn get_world_ref(&self) -> &World {
@@ -70,13 +75,13 @@ impl Game {
     }
 
     fn game_logic(&mut self) {
-        let bindings_opt = self.get_world_ref().get_resource::<Bindings>();
+        let bindings_opt = self.get_world_ref().get_resource::<InputBindings>();
         if let None = bindings_opt {
             panic!("There are no bindings")
         }
-        input_manager::capture_inputs::capture_mouse_inputs(self);
-        input_manager::capture_inputs::capture_button_inputs(self);
-        input_manager::capture_inputs::capture_axial_inputs(self);
+        key_binding::capture_inputs::capture_mouse_inputs(self);
+        key_binding::capture_inputs::capture_button_inputs(self);
+        key_binding::capture_inputs::capture_axial_inputs(self);
         self.run_schedule();
     }
 

@@ -1,4 +1,6 @@
 use crate::components::controllable::Controllable;
+use crate::components::position::Position;
+use crate::components::velocity::Velocity;
 use crate::resources::timer::Timer;
 use crate::systems::axis_velocity::axis_velocity;
 use crate::systems::movement::movement_system;

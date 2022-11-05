@@ -1,4 +1,5 @@
 use bevy_ecs::prelude::*;
+use crate::components::position::Position;
 
 use crate::components::rendering_character::RenderingCharacter;
 use crate::resources::timer::Timer;
@@ -67,20 +68,3 @@ pub fn initialize_with_rendered_entity_and_timing_system() -> TestEnv {
         .insert(RenderingCharacter { character: 't' }).id();
     return TestEnv { game, entity };
 }
-
-
-/*
-#[test]
-fn some_test() {
-    let mut test_env = initialize();
-
-    test_env.game.get_world().insert_resource(Timer::default());
-
-    let mut schedule = Schedule::default();
-    schedule.add_stage("update", SystemStage::parallel()
-        .with_system(movement)
-    );
-
-}
-
- */

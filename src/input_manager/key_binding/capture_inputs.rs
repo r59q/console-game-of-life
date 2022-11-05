@@ -1,14 +1,15 @@
 use console_engine::{ConsoleEngine, MouseButton};
-use crate::{game::Game, resources::mouse_inputs::{MouseInputs}};
+use crate::game::Game;
 use crate::input_manager::buttons::Button;
 use crate::input_manager::input_action::InputAction;
-use crate::resources::bindings::Bindings;
+use crate::resources::inputs::input_bindings::InputBindings;
 use strum::IntoEnumIterator;
 use crate::input_manager::axis::Axis;
 use crate::input_manager::input_action::InputAction::{Down, Held, Up};
 use crate::input_manager::input_types::InputType;
-use crate::resources::axis_inputs::AxisInputs;
-use crate::resources::button_inputs::ButtonInputs;
+use crate::resources::inputs::axis_inputs::AxisInputs;
+use crate::resources::inputs::button_inputs::ButtonInputs;
+use crate::resources::inputs::mouse_inputs::MouseInputs;
 
 fn handle_input(input: InputType, engine: &ConsoleEngine) -> InputAction {
     return match input {
@@ -42,7 +43,7 @@ fn handle_input(input: InputType, engine: &ConsoleEngine) -> InputAction {
 pub fn capture_axial_inputs(game: &mut Game) {
     for axis in Axis::iter() {
         let axis_binding_opt
-            = game.get_world_ref().get_resource::<Bindings>().unwrap()
+            = game.get_world_ref().get_resource::<InputBindings>().unwrap()
             .get_axial_bindings(axis);
 
         if let Some(axial_binding) = axis_binding_opt {
@@ -72,7 +73,7 @@ pub fn capture_button_inputs(game: &mut Game) {
 
     for button in Button::iter() {
         let button_binding_opt
-            = game.get_world_ref().get_resource::<Bindings>().unwrap()
+            = game.get_world_ref().get_resource::<InputBindings>().unwrap()
             .get_button_bindings(button);
         if let Some(button_binding) = button_binding_opt {
             let button_binding= button_binding.clone();

@@ -1,17 +1,19 @@
 use std::collections::HashMap;
-use crate::input_manager::{SharedInputBehaviour};
 use crate::input_manager::axis::Axis;
+use crate::resources::inputs::SharedInputBehaviour;
 
-pub struct AxisInputs(HashMap<Axis, f64>);
+pub struct AxisInputs {
+    input_map: HashMap<Axis, f64>,
+}
 
 impl AxisInputs {
     pub fn new() -> Self {
-        return Self(HashMap::new());
+        return Self { /* fields */ input_map: HashMap::new() }
     }
 
     pub fn get(&self, axis: &Axis) -> f64 {
-        if self.0.contains_key(axis) {
-            return self.0.get(axis).unwrap().clone();
+        if self.input_map.contains_key(axis) {
+            return self.input_map.get(axis).unwrap().clone();
         }
         return 0.;
     }
@@ -23,7 +25,7 @@ impl AxisInputs {
         if value > 1. {
             value = 1.;
         }
-        self.0.entry(axis)
+        self.input_map.entry(axis)
             .and_modify(|val| *val = value)
             .or_insert(value);
     }
@@ -31,7 +33,7 @@ impl AxisInputs {
 
 impl SharedInputBehaviour for AxisInputs {
     fn reset_inputs(&mut self) {
-        for (_, val) in self.0.iter_mut() {
+        for (_, val) in self.input_map.iter_mut() {
             *val = 0.;
         }
     }
@@ -40,8 +42,9 @@ impl SharedInputBehaviour for AxisInputs {
 #[cfg(test)]
 mod test {
     use super::AxisInputs;
-    use crate::input_manager::{axis::Axis, SharedInputBehaviour};
+    use crate::input_manager::axis::Axis;
     use strum::{IntoEnumIterator};
+    use crate::resources::inputs::SharedInputBehaviour;
 
     #[test]
     fn can_get_axial_input() {

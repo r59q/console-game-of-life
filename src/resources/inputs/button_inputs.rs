@@ -3,14 +3,16 @@ use crate::input_manager::buttons::Button;
 use crate::input_manager::input_action::InputAction;
 
 pub struct ButtonInputs {
-    inputs: HashMap<Button, InputAction>
+    input_map: HashMap<Button, InputAction>,
+    held_input_map: HashMap<Button, InputAction>,
 }
+
 impl ButtonInputs {
     pub(crate) fn new() -> Self {
-        ButtonInputs { inputs: HashMap::new() }
+        ButtonInputs { input_map: HashMap::new(), held_input_map: HashMap::new() }
     }
     pub(crate) fn get_btn_down(&self, button_name: Button) -> bool {
-        let input_action = self.inputs.get(&button_name);
+        let input_action = self.input_map.get(&button_name);
         if let Some(action) = input_action {
             if let InputAction::Down = action {
                 return true;
@@ -20,13 +22,13 @@ impl ButtonInputs {
     }
 
     pub(crate) fn set_btn(&mut self, button_name: Button, action: InputAction) {
-        self.inputs.entry(button_name)
+        self.input_map.entry(button_name)
             .and_modify(|val| *val = action)
             .or_insert(action);
     }
 
     pub(crate) fn get_btn_action(&self, button_name: Button) -> &InputAction {
-        let input = self.inputs.get(&button_name);
+        let input = self.input_map.get(&button_name);
         return match input {
             None => &InputAction::None,
             Some(action) => action,
@@ -38,7 +40,7 @@ impl ButtonInputs {
 mod test {
     use crate::input_manager::buttons::Button;
     use crate::input_manager::input_action::InputAction;
-    use crate::resources::button_inputs::ButtonInputs;
+    use crate::resources::inputs::button_inputs::ButtonInputs;
 
     use strum::IntoEnumIterator;
     #[test]

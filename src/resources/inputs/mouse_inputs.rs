@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 use console_engine::MouseButton;
 use crate::input_manager::input_action::InputAction;
+use crate::resources::inputs::SharedInputBehaviour;
 
-use crate::input_manager::SharedInputBehaviour;
 
 #[derive(Debug)]
 pub struct MouseState {
@@ -26,40 +26,44 @@ impl MouseState {
 
 #[derive(Debug)]
 pub struct MouseInputs {
-    inputs: HashMap<MouseButton, MouseState>,
-    position: (u32, u32)
+    mouse_input_map: HashMap<MouseButton, MouseState>,
+    mouse_position: (u32, u32),
 }
+
 impl MouseInputs {
     pub(crate) fn new() -> MouseInputs {
-        return MouseInputs { inputs: HashMap::new(), position: (0,0) }
+        return MouseInputs {
+            mouse_input_map: HashMap::new(),
+            mouse_position: (0, 0)
+        }
     }
 
     pub(crate) fn get_state(&mut self, mouse_button: MouseButton) -> &MouseState {
-        return self.inputs.entry(mouse_button).or_insert(MouseState::new());
+        return self.mouse_input_map.entry(mouse_button).or_insert(MouseState::new());
     }
 
     pub(crate) fn set_state(&mut self, button: MouseButton, action: InputAction, x: u32, y: u32) {
-        let state = self.inputs.entry(button).or_insert(MouseState::new());
+        let state = self.mouse_input_map.entry(button).or_insert(MouseState::new());
         state.set_action(action);
-        self.position = (x, y)
+        self.mouse_position = (x, y)
     }
 
     pub(crate) fn get_position(&self) -> (u32, u32) {
-        return self.position;
+        return self.mouse_position;
     }
 }
 
 impl SharedInputBehaviour for MouseInputs {
     fn reset_inputs(&mut self) {
-        self.inputs = Self::new().inputs;
+        self.mouse_input_map = Self::new().mouse_input_map;
     }
 }
 
 #[cfg(test)]
 mod test {
     use console_engine::MouseButton;
+    use crate::resources::inputs::SharedInputBehaviour;
 
-    use crate::input_manager::SharedInputBehaviour;
 
     use super::{MouseInputs, MouseState, InputAction};
 
@@ -98,7 +102,7 @@ mod test {
 
         let action: InputAction = left_state.get_action();
         assert!(matches!(action, InputAction::Down));
-        assert_eq!(binding.position, (2, 3))
+        assert_eq!(binding.mouse_position, (2, 3))
     }
 
     #[test]

@@ -2,18 +2,16 @@ use bevy_ecs::prelude::SystemStage;
 use console_engine::KeyCode;
 use console_engine::MouseButton::{Left, Right};
 
-use components::{position::Position, velocity::Velocity};
 use game::Game;
-use resources::axis_inputs::AxisInputs;
-use resources::bindings::Bindings;
+use resources::inputs::axis_inputs::AxisInputs;
+use resources::inputs::input_bindings::InputBindings;
 use systems::reset_axis_input::reset_axial_inputs;
-use crate::components::controllable::Controllable;
-use crate::components::rendering_character::RenderingCharacter;
 use crate::input_manager::axis::Axis::{Horizontal, Vertical};
 use crate::input_manager::buttons::Button::{Buy, Fire1, Fire2};
 use crate::input_manager::input_types::InputType::{Key, Mouse};
-use crate::resources::button_inputs::ButtonInputs;
-use crate::resources::mouse_inputs::MouseInputs;
+use resources::inputs::button_inputs::ButtonInputs;
+use resources::inputs::mouse_inputs::MouseInputs;
+use crate::prefabs::Prefabs;
 
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
@@ -29,16 +27,12 @@ mod components;
 mod systems;
 mod resources;
 mod input_manager;
+mod prefabs;
 
 fn main() {
     let mut game: Game = Game::new(3, 3, 30);
-    let mut player_entity =
-        game.get_world_mut().spawn();
-    player_entity
-        .insert(Position { x: 1., y: 1. })
-        .insert(Velocity { x: 0.0, y: 0.0 })
-        .insert(Controllable { })
-        .insert(RenderingCharacter { character:'@' });
+
+    game.spawn_prefab(Prefabs::PLAYER_CHARACTER);
 
     add_resources(&mut game);
 
@@ -60,8 +54,8 @@ fn add_resources(game: &mut Game) {
     game.get_world_mut().insert_resource(ButtonInputs::new());
 }
 
-fn bind_keys() -> Bindings {
-    let mut bindings = Bindings::new();
+fn bind_keys() -> InputBindings {
+    let mut bindings = InputBindings::new();
     bindings.bind_to_button(Fire1, Mouse(Left));
     bindings.bind_to_button(Fire2, Mouse(Right));
     bindings.bind_to_button(Buy, Key(KeyCode::Char('b')));
@@ -69,12 +63,12 @@ fn bind_keys() -> Bindings {
     bindings.bind_to_axis(
         Horizontal,
         Key(KeyCode::Char('d')),
-        Key(KeyCode::Char('a'))
+        Key(KeyCode::Char('a')),
     );
     bindings.bind_to_axis(
         Vertical,
         Key(KeyCode::Char('s')),
-        Key(KeyCode::Char('w'))
+        Key(KeyCode::Char('w')),
     );
 
     bindings
@@ -88,7 +82,7 @@ fn stage_systems(game: &mut Game) {
         .with_system(movement_system)
         .with_system(axis_velocity)
         .with_system(character_renderer_reset)
-        .with_system(debugger)
+        .with_system(debugger),
     );
     game.add_stage_to_schedule("pre-render", SystemStage::single_threaded()
         .with_system(character_renderer),

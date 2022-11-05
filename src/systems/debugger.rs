@@ -5,9 +5,9 @@ use strum::IntoEnumIterator;
 
 use crate::input_manager::axis::Axis;
 use crate::input_manager::buttons::Button::{Buy};
-use crate::resources::axis_inputs::AxisInputs;
-use crate::resources::button_inputs::ButtonInputs;
-use crate::resources::mouse_inputs::MouseInputs;
+use crate::resources::inputs::axis_inputs::AxisInputs;
+use crate::resources::inputs::button_inputs::ButtonInputs;
+use crate::resources::inputs::mouse_inputs::MouseInputs;
 
 pub fn debugger(axial_inputs: Res<AxisInputs>, mut mouse_inputs: ResMut<MouseInputs>, button_inputs: Res<ButtonInputs>) {
 
