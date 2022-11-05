@@ -4,10 +4,13 @@ use console_engine::MouseButton;
 
 use crate::inputmanager::axis::Axis::Horizontal;
 use crate::inputmanager::axis::Axis::Vertical;
+use crate::inputmanager::button_binding::ButtonBinding;
+use crate::inputmanager::input_action::InputAction;
+use crate::inputmanager::input_types::InputType::Key;
 
 use crate::resources::axis_inputs::AxisInputs;
 use crate::resources::bindings::Bindings;
-use crate::resources::mouse_inputs::MouseAction;
+use crate::resources::button_inputs::ButtonInputs;
 use crate::resources::mouse_inputs::MouseInputs;
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
@@ -209,7 +212,7 @@ fn system_can_reset_mouse_inputs() {
 
     let mut inputs = test_env.game.get_world_mut().get_resource_mut::<MouseInputs>().unwrap();
 
-    inputs.set_state(MouseButton::Left, MouseAction::Down, 1, 2);
+    inputs.set_state(MouseButton::Left, InputAction::Down, 1, 2);
 
     test_env.game.run_schedule();
 
@@ -217,7 +220,7 @@ fn system_can_reset_mouse_inputs() {
     
     assert_eq!(hopefully_reset_state.get_position(), (1, 2));
     let state = hopefully_reset_state.get_state(MouseButton::Left);
-    assert_eq!(state.get_action(), MouseAction::None);
+    assert_eq!(state.get_action(), InputAction::None);
 }
 
 #[test]
@@ -237,10 +240,10 @@ fn can_add_key_to_key_bindings() {
     let mut test_env = initialize();
     let mut keybinding_resource = Bindings::new();
 
-    keybinding_resource.bind_key_to_axis(
+    keybinding_resource.bind_to_axis(
         Horizontal, 
-        KeyCode::Char('d'), 
-        KeyCode::Char('a')
+        Key(KeyCode::Char('d')),
+        Key(KeyCode::Char('a'))
     );
 
     test_env.game.get_world_mut().insert_resource(keybinding_resource);
@@ -251,10 +254,19 @@ fn can_add_key_to_key_bindings() {
 
     let horizontals = keybindings.get_axial_bindings(Horizontal);
 
-    assert_eq!(horizontals.len(), 1);
+    assert_eq!(horizontals.unwrap().len(), 1);
 
     let verticals = keybindings.get_axial_bindings(Vertical);
-    assert_eq!(verticals.len(), 0);
+    assert!(matches!(verticals, None));
+}
 
 
+#[test]
+fn can_add_button_inputs_resource() {
+    let mut test_env = initialize();
+    let mut button_bindings = ButtonInputs::new();
+    test_env.game.get_world_mut().insert_resource(button_bindings);
+
+    let inputs = test_env.game.get_world_mut().get_resource_mut::<ButtonInputs>();
+    assert!(matches!(inputs, Some(_)));
 }
