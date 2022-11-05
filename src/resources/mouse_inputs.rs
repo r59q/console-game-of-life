@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
 use console_engine::MouseButton;
-use crate::inputmanager::input_action::InputAction;
+use crate::input_manager::input_action::InputAction;
 
-use crate::inputmanager::SharedInputBehaviour;
+use crate::input_manager::SharedInputBehaviour;
 
 #[derive(Debug)]
 pub struct MouseState {
@@ -59,13 +59,13 @@ impl SharedInputBehaviour for MouseInputs {
 mod test {
     use console_engine::MouseButton;
 
-    use crate::inputmanager::SharedInputBehaviour;
+    use crate::input_manager::SharedInputBehaviour;
 
     use super::{MouseInputs, MouseState, InputAction};
 
     #[test]
     fn can_create_mouse_inputs() {
-        let mouse_inputs: MouseInputs = MouseInputs::new();
+        let _mouse_inputs: MouseInputs = MouseInputs::new();
     }
 
     #[test]

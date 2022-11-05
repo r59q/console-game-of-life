@@ -1,6 +1,6 @@
 use std::collections::HashMap;
-use crate::inputmanager::buttons::Button;
-use crate::inputmanager::input_action::InputAction;
+use crate::input_manager::buttons::Button;
+use crate::input_manager::input_action::InputAction;
 
 pub struct ButtonInputs {
     inputs: HashMap<Button, InputAction>
@@ -36,14 +36,14 @@ impl ButtonInputs {
 
 #[cfg(test)]
 mod test {
-    use crate::inputmanager::buttons::Button;
-    use crate::inputmanager::input_action::InputAction;
+    use crate::input_manager::buttons::Button;
+    use crate::input_manager::input_action::InputAction;
     use crate::resources::button_inputs::ButtonInputs;
 
     use strum::IntoEnumIterator;
     #[test]
     fn can_make_struct() {
-        let inputs = ButtonInputs::new();
+        let _inputs = ButtonInputs::new();
     }
 
     #[test]

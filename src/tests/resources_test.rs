@@ -2,11 +2,10 @@ use std::time::Duration;
 use console_engine::KeyCode;
 use console_engine::MouseButton;
 
-use crate::inputmanager::axis::Axis::Horizontal;
-use crate::inputmanager::axis::Axis::Vertical;
-use crate::inputmanager::button_binding::ButtonBinding;
-use crate::inputmanager::input_action::InputAction;
-use crate::inputmanager::input_types::InputType::Key;
+use crate::input_manager::axis::Axis::Horizontal;
+use crate::input_manager::axis::Axis::Vertical;
+use crate::input_manager::input_action::InputAction;
+use crate::input_manager::input_types::InputType::Key;
 
 use crate::resources::axis_inputs::AxisInputs;
 use crate::resources::bindings::Bindings;
@@ -15,7 +14,6 @@ use crate::resources::mouse_inputs::MouseInputs;
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
 use crate::systems::reset_axis_input::reset_axial_inputs;
-use crate::systems::reset_mouse_input;
 use crate::systems::reset_mouse_input::reset_mouse_inputs;
 use crate::systems::timing::timing_system;
 
@@ -103,7 +101,6 @@ fn can_add_rendering_target() {
         Some(_) => { assert!(true) }
     }
 }
-
 
 #[test]
 fn can_add_input_resource() {
@@ -217,7 +214,7 @@ fn system_can_reset_mouse_inputs() {
     test_env.game.run_schedule();
 
     let mut hopefully_reset_state = test_env.game.get_world_mut().get_resource_mut::<MouseInputs>().unwrap();
-    
+
     assert_eq!(hopefully_reset_state.get_position(), (1, 2));
     let state = hopefully_reset_state.get_state(MouseButton::Left);
     assert_eq!(state.get_action(), InputAction::None);
@@ -241,16 +238,16 @@ fn can_add_key_to_key_bindings() {
     let mut keybinding_resource = Bindings::new();
 
     keybinding_resource.bind_to_axis(
-        Horizontal, 
+        Horizontal,
         Key(KeyCode::Char('d')),
-        Key(KeyCode::Char('a'))
+        Key(KeyCode::Char('a')),
     );
 
     test_env.game.get_world_mut().insert_resource(keybinding_resource);
 
     let inputs = test_env.game.get_world_mut().get_resource_mut::<Bindings>();
     assert!(matches!(inputs, Some(_)));
-    let mut keybindings = inputs.unwrap();
+    let keybindings = inputs.unwrap();
 
     let horizontals = keybindings.get_axial_bindings(Horizontal);
 
@@ -264,7 +261,7 @@ fn can_add_key_to_key_bindings() {
 #[test]
 fn can_add_button_inputs_resource() {
     let mut test_env = initialize();
-    let mut button_bindings = ButtonInputs::new();
+    let button_bindings = ButtonInputs::new();
     test_env.game.get_world_mut().insert_resource(button_bindings);
 
     let inputs = test_env.game.get_world_mut().get_resource_mut::<ButtonInputs>();

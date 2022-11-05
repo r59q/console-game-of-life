@@ -1,4 +1,4 @@
-use crate::inputmanager::input_types::InputType;
+use crate::input_manager::input_types::InputType;
 
 #[derive(Clone, Copy)]
 pub struct AxialBinding {

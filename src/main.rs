@@ -9,9 +9,9 @@ use resources::bindings::Bindings;
 use systems::reset_axis_input::reset_axial_inputs;
 use crate::components::controllable::Controllable;
 use crate::components::rendering_character::RenderingCharacter;
-use crate::inputmanager::axis::Axis::{Horizontal, Vertical};
-use crate::inputmanager::buttons::Button::{Buy, Fire1, Fire2};
-use crate::inputmanager::input_types::InputType::{Key, Mouse};
+use crate::input_manager::axis::Axis::{Horizontal, Vertical};
+use crate::input_manager::buttons::Button::{Buy, Fire1, Fire2};
+use crate::input_manager::input_types::InputType::{Key, Mouse};
 use crate::resources::button_inputs::ButtonInputs;
 use crate::resources::mouse_inputs::MouseInputs;
 
@@ -28,7 +28,7 @@ mod game;
 mod components;
 mod systems;
 mod resources;
-mod inputmanager;
+mod input_manager;
 
 fn main() {
     let mut game: Game = Game::new(3, 3, 30);

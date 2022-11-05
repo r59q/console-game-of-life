@@ -1,11 +1,9 @@
 use std::collections::HashMap;
 
-use console_engine::KeyCode;
-
-use crate::inputmanager::{axis::Axis, axial_binding::AxialBinding};
-use crate::inputmanager::button_binding::ButtonBinding;
-use crate::inputmanager::buttons::Button;
-use crate::inputmanager::input_types::InputType;
+use crate::input_manager::{axis::Axis, axial_binding::AxialBinding};
+use crate::input_manager::button_binding::ButtonBinding;
+use crate::input_manager::buttons::Button;
+use crate::input_manager::input_types::InputType;
 
 pub struct Bindings {
     axials: HashMap<Axis, Vec<AxialBinding>>,
@@ -62,11 +60,9 @@ mod test {
     use console_engine::KeyCode;
     use console_engine::MouseButton::{Left, Right};
 
-    use crate::inputmanager::axis::Axis;
-    use crate::inputmanager::axis::Axis::{Horizontal, Vertical};
-    use crate::inputmanager::button_binding::ButtonBinding;
-    use crate::inputmanager::buttons::Button::Fire1;
-    use crate::inputmanager::input_types::InputType::{Key, Mouse};
+    use crate::input_manager::axis::Axis::{Horizontal, Vertical};
+    use crate::input_manager::buttons::Button::Fire1;
+    use crate::input_manager::input_types::InputType::{Key, Mouse};
 
     use super::Bindings;
 
@@ -84,7 +80,7 @@ mod test {
 
     #[test]
     fn has_key_horizontal_bindings() {
-        let mut keybindings = Bindings::new();
+        let keybindings = Bindings::new();
         let _horizontal = keybindings.get_axial_bindings(Horizontal);
     }
 
@@ -143,7 +139,7 @@ mod test {
 
     #[test]
     fn can_get_button_binding() {
-        let mut keybindings = Bindings::new();
+        let keybindings = Bindings::new();
 
         let _fire1_bindings = keybindings.get_button_bindings(Fire1);
 
