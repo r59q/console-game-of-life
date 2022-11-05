@@ -1,6 +1,7 @@
 use bevy_ecs::{prelude::{Component, Entity}, world::World, system::Query, schedule::{Schedule, SystemStage}};
 
 use crate::components::{position::Position, velocity::Velocity};
+use crate::components::controllable::Controllable;
 
 use super::*;
 
@@ -17,15 +18,15 @@ fn test_system (mut query: Query<(Entity, &mut TestComponent)>) {
 fn can_add_component() {
     let mut test_env = initialize();
 
-    let targetx = 1337;
+    let target_x = 1337;
     let world: &mut World = test_env.game.get_world_mut();
 
-    let entity = world.spawn().insert(TestComponent {x:targetx}).id();
+    let entity = world.spawn().insert(TestComponent {x: target_x }).id();
 
     let entity_ref = world.entity(entity);
     let test_component_x = entity_ref.get::<TestComponent>().unwrap().x;
 
-    assert_eq!(test_component_x, targetx)
+    assert_eq!(test_component_x, target_x)
 }
 
 #[test]
@@ -160,4 +161,22 @@ fn can_add_and_get_schedule() {
 
     test_env.game.set_schedule(schedule);
     test_env.game.get_schedule_mut();
+}
+
+#[test]
+fn can_add_controllable_component() {
+    let mut test_env = initialize_with_entity();
+
+    let entity = test_env.entity;
+
+    let controllable_component = Controllable {};
+
+    test_env.game.get_world_mut().entity_mut(entity)
+        .insert(controllable_component);
+
+    let world_entity = test_env.game.get_world_mut().entity(entity);
+
+    let world_controllable = world_entity.get::<Controllable>();
+
+    assert!(!world_controllable.is_none());
 }

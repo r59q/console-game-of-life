@@ -6,9 +6,11 @@ use crate::inputmanager::buttons::Button;
 use crate::inputmanager::input_action::InputAction;
 use crate::resources::bindings::Bindings;
 use strum::IntoEnumIterator;
+use crate::inputmanager::axis::Axis;
 use crate::inputmanager::button_binding::ButtonBinding;
 use crate::inputmanager::input_action::InputAction::{Down, Drag, Held, Up};
 use crate::inputmanager::input_types::InputType;
+use crate::resources::axis_inputs::AxisInputs;
 use crate::resources::button_inputs::ButtonInputs;
 
 
@@ -56,11 +58,36 @@ fn handle_input(input: InputType, engine: &ConsoleEngine) -> InputAction {
     }
 }
 
-pub fn capture_button_inputs(game: &mut Game) {
-    let bindings_opt = game.get_world_ref().get_resource::<Bindings>();
-    if let None = bindings_opt {
-        panic!("There are no bindings")
+pub fn capture_axial_inputs(game: &mut Game) {
+    for axis in Axis::iter() {
+        let axis_binding_opt
+            = game.get_world_ref().get_resource::<Bindings>().unwrap()
+            .get_axial_bindings(axis);
+
+        if let Some(axial_binding) = axis_binding_opt {
+            let axial_binding= axial_binding.clone();
+            for binding in axial_binding {
+                let engine = game.get_engine();
+                let action_positive = handle_input(binding.positive, engine);
+                let action_negative = handle_input(binding.negative, engine);
+                let pos_val = match action_positive {
+                    Down => 1.,
+                    Held => 1.,
+                    _ => 0.
+                };
+                let neg_val = match action_negative {
+                    Down => 1.,
+                    Held => 1.,
+                    _ => 0.
+                };
+                game.get_world_mut().get_resource_mut::<AxisInputs>().unwrap()
+                    .set(axis, -neg_val + pos_val);
+
+            }
+        }
     }
+}
+pub fn capture_button_inputs(game: &mut Game) {
 
     for button in Button::iter() {
         let button_binding_opt

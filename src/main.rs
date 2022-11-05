@@ -7,8 +7,9 @@ use game::Game;
 use resources::axis_inputs::AxisInputs;
 use resources::bindings::Bindings;
 use systems::reset_axis_input::reset_axial_inputs;
+use crate::components::controllable::Controllable;
 use crate::components::rendering_character::RenderingCharacter;
-use crate::inputmanager::axis::Axis::Horizontal;
+use crate::inputmanager::axis::Axis::{Horizontal, Vertical};
 use crate::inputmanager::buttons::Button::{Buy, Fire1, Fire2};
 use crate::inputmanager::input_types::InputType::{Key, Mouse};
 use crate::resources::button_inputs::ButtonInputs;
@@ -16,6 +17,7 @@ use crate::resources::mouse_inputs::MouseInputs;
 
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
+use crate::systems::axis_velocity::axis_velocity;
 use crate::systems::character_renderer::{character_renderer, character_renderer_reset};
 use crate::systems::debugger::debugger;
 use crate::systems::movement::movement_system;
@@ -33,8 +35,9 @@ fn main() {
     let mut player_entity =
         game.get_world_mut().spawn();
     player_entity
-        .insert(Position { x: 0., y: 0. })
-        .insert(Velocity { x: 0.3, y: 0.1 })
+        .insert(Position { x: 1., y: 1. })
+        .insert(Velocity { x: 0.0, y: 0.0 })
+        .insert(Controllable { })
         .insert(RenderingCharacter { character:'@' });
 
     add_resources(&mut game);
@@ -48,20 +51,33 @@ fn main() {
 fn add_resources(game: &mut Game) {
     game.get_world_mut().insert_resource(Timer::new());
     game.get_world_mut().insert_resource(RenderTargets::new());
+
+    let bindings = bind_keys();
+    game.get_world_mut().insert_resource(bindings);
+
     game.get_world_mut().insert_resource(AxisInputs::new());
+    game.get_world_mut().insert_resource(MouseInputs::new());
+    game.get_world_mut().insert_resource(ButtonInputs::new());
+}
+
+fn bind_keys() -> Bindings {
     let mut bindings = Bindings::new();
     bindings.bind_to_button(Fire1, Mouse(Left));
     bindings.bind_to_button(Fire2, Mouse(Right));
     bindings.bind_to_button(Buy, Key(KeyCode::Char('b')));
+
     bindings.bind_to_axis(
         Horizontal,
         Key(KeyCode::Char('d')),
         Key(KeyCode::Char('a'))
     );
+    bindings.bind_to_axis(
+        Vertical,
+        Key(KeyCode::Char('s')),
+        Key(KeyCode::Char('w'))
+    );
 
-    game.get_world_mut().insert_resource(bindings);
-    game.get_world_mut().insert_resource(MouseInputs::new());
-    game.get_world_mut().insert_resource(ButtonInputs::new());
+    bindings
 }
 
 fn stage_systems(game: &mut Game) {
@@ -70,6 +86,7 @@ fn stage_systems(game: &mut Game) {
     );
     game.add_stage_to_schedule("update", SystemStage::parallel()
         .with_system(movement_system)
+        .with_system(axis_velocity)
         .with_system(character_renderer_reset)
         .with_system(debugger)
     );
