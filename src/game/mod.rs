@@ -72,8 +72,13 @@ impl Game {
     }
 
     fn game_logic(&mut self) {
+        let bindings_opt = self.get_world_ref().get_resource::<Bindings>();
+        if let None = bindings_opt {
+            panic!("There are no bindings")
+        }
         inputmanager::capture_inputs::capture_mouse_inputs(self);
         inputmanager::capture_inputs::capture_button_inputs(self);
+        inputmanager::capture_inputs::capture_axial_inputs(self);
         self.run_schedule();
     }
 

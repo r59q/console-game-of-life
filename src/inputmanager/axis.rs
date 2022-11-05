@@ -1,6 +1,6 @@
 use std::convert::TryFrom;
 use strum::EnumIter;
-#[derive(Hash, Eq, PartialEq, EnumIter, Debug)]
+#[derive(Hash, Eq, PartialEq, EnumIter, Debug, Copy, Clone)]
 pub enum Axis {
     Horizontal,
     Vertical
