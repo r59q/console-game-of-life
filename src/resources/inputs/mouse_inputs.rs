@@ -2,8 +2,8 @@ use std::collections::HashMap;
 
 use console_engine::MouseButton;
 use crate::input_manager::input_action::InputAction;
+use crate::resources::inputs::SharedInputBehaviour;
 
-use crate::input_manager::SharedInputBehaviour;
 
 #[derive(Debug)]
 pub struct MouseState {
@@ -62,8 +62,8 @@ impl SharedInputBehaviour for MouseInputs {
 #[cfg(test)]
 mod test {
     use console_engine::MouseButton;
+    use crate::resources::inputs::SharedInputBehaviour;
 
-    use crate::input_manager::SharedInputBehaviour;
 
     use super::{MouseInputs, MouseState, InputAction};
 

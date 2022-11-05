@@ -4,11 +4,12 @@ use crate::input_manager::input_action::InputAction;
 
 pub struct ButtonInputs {
     input_map: HashMap<Button, InputAction>,
+    held_input_map: HashMap<Button, InputAction>,
 }
 
 impl ButtonInputs {
     pub(crate) fn new() -> Self {
-        ButtonInputs { input_map: HashMap::new() }
+        ButtonInputs { input_map: HashMap::new(), held_input_map: HashMap::new() }
     }
     pub(crate) fn get_btn_down(&self, button_name: Button) -> bool {
         let input_action = self.input_map.get(&button_name);
