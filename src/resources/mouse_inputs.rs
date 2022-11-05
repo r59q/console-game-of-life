@@ -1,33 +1,25 @@
 use std::collections::HashMap;
 
 use console_engine::MouseButton;
+use crate::inputmanager::input_action::InputAction;
 
 use crate::inputmanager::SharedInputBehaviour;
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
-pub enum MouseAction {
-    None,
-    Down,
-    Drag,
-    Up,
-}
-
-
 #[derive(Debug)]
 pub struct MouseState {
-    action: MouseAction
+    action: InputAction
 }
-// todo: Mouse state may be too much. Might be replaced with just the action.
+
 impl MouseState {
     fn new() -> Self {
-        return MouseState { action: MouseAction::None  };
+        return MouseState { action: InputAction::None  };
     }
 
-    pub fn get_action(&self) -> MouseAction {
+    pub fn get_action(&self) -> InputAction {
         return self.action;
     }
 
-    fn set_action(&mut self, action: MouseAction) {
+    fn set_action(&mut self, action: InputAction) {
         self.action = action;
     }
 }
@@ -46,7 +38,7 @@ impl MouseInputs {
         return self.inputs.entry(mouse_button).or_insert(MouseState::new());
     }
 
-    pub(crate) fn set_state(&mut self, button: MouseButton, action: MouseAction, x: u32, y: u32) {
+    pub(crate) fn set_state(&mut self, button: MouseButton, action: InputAction, x: u32, y: u32) {
         let state = self.inputs.entry(button).or_insert(MouseState::new());
         state.set_action(action);
         self.position = (x, y)
@@ -69,7 +61,7 @@ mod test {
 
     use crate::inputmanager::SharedInputBehaviour;
 
-    use super::{MouseInputs, MouseState, MouseAction};
+    use super::{MouseInputs, MouseState, InputAction};
 
     #[test]
     fn can_create_mouse_inputs() {
@@ -90,8 +82,8 @@ mod test {
         let left_state: &MouseState = 
             binding.get_state(left_button);
 
-        let action: MouseAction = left_state.get_action();
-        assert!(matches!(action, MouseAction::None));
+        let action: InputAction = left_state.get_action();
+        assert!(matches!(action, InputAction::None));
     }
 
     #[test]
@@ -99,13 +91,13 @@ mod test {
         let left_button = MouseButton::Left;
         let mut binding = MouseInputs::new();
 
-        binding.set_state(left_button, MouseAction::Down, 2, 3);
+        binding.set_state(left_button, InputAction::Down, 2, 3);
 
         let left_state: &MouseState = 
             binding.get_state(left_button);
 
-        let action: MouseAction = left_state.get_action();
-        assert!(matches!(action, MouseAction::Down));
+        let action: InputAction = left_state.get_action();
+        assert!(matches!(action, InputAction::Down));
         assert_eq!(binding.position, (2, 3))
     }
 
@@ -114,13 +106,13 @@ mod test {
         let left_button = MouseButton::Left;
         let mut binding = MouseInputs::new();
 
-        binding.set_state(left_button, MouseAction::Down, 2, 3);
+        binding.set_state(left_button, InputAction::Down, 2, 3);
 
         let mut left_state: &MouseState = 
             binding.get_state(left_button);
 
-        let mut action: MouseAction = left_state.get_action();
-        assert!(matches!(action, MouseAction::Down));
+        let mut action: InputAction = left_state.get_action();
+        assert!(matches!(action, InputAction::Down));
         assert_eq!(binding.get_position(), (2, 3));
 
         binding.reset_inputs();
@@ -128,7 +120,7 @@ mod test {
             binding.get_state(left_button);
 
         action = left_state.get_action();
-        assert!(matches!(action, MouseAction::None));
+        assert!(matches!(action, InputAction::None));
         assert_eq!(binding.get_position(), (2, 3));
 
     }

@@ -1,5 +1,6 @@
 use bevy_ecs::prelude::SystemStage;
 use console_engine::KeyCode;
+use console_engine::MouseButton::{Left, Right};
 
 use components::{position::Position, velocity::Velocity};
 use game::Game;
@@ -7,6 +8,10 @@ use resources::axis_inputs::AxisInputs;
 use resources::bindings::Bindings;
 use systems::reset_axis_input::reset_axial_inputs;
 use crate::components::rendering_character::RenderingCharacter;
+use crate::inputmanager::axis::Axis::Horizontal;
+use crate::inputmanager::buttons::Button::{Buy, Fire1, Fire2};
+use crate::inputmanager::input_types::InputType::{Key, Mouse};
+use crate::resources::button_inputs::ButtonInputs;
 use crate::resources::mouse_inputs::MouseInputs;
 
 use crate::resources::render_targets::RenderTargets;
@@ -24,7 +29,7 @@ mod resources;
 mod inputmanager;
 
 fn main() {
-    let mut game: Game = Game::new(3, 3, 60);
+    let mut game: Game = Game::new(3, 3, 30);
     let mut player_entity =
         game.get_world_mut().spawn();
     player_entity
@@ -44,8 +49,19 @@ fn add_resources(game: &mut Game) {
     game.get_world_mut().insert_resource(Timer::new());
     game.get_world_mut().insert_resource(RenderTargets::new());
     game.get_world_mut().insert_resource(AxisInputs::new());
-    game.get_world_mut().insert_resource(Bindings::new());
+    let mut bindings = Bindings::new();
+    bindings.bind_to_button(Fire1, Mouse(Left));
+    bindings.bind_to_button(Fire2, Mouse(Right));
+    bindings.bind_to_button(Buy, Key(KeyCode::Char('b')));
+    bindings.bind_to_axis(
+        Horizontal,
+        Key(KeyCode::Char('d')),
+        Key(KeyCode::Char('a'))
+    );
+
+    game.get_world_mut().insert_resource(bindings);
     game.get_world_mut().insert_resource(MouseInputs::new());
+    game.get_world_mut().insert_resource(ButtonInputs::new());
 }
 
 fn stage_systems(game: &mut Game) {
