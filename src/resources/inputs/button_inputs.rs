@@ -4,12 +4,11 @@ use crate::input_manager::input_action::InputAction;
 
 pub struct ButtonInputs {
     input_map: HashMap<Button, InputAction>,
-    held_input_map: HashMap<Button, InputAction>,
 }
 
 impl ButtonInputs {
     pub(crate) fn new() -> Self {
-        ButtonInputs { input_map: HashMap::new(), held_input_map: HashMap::new() }
+        ButtonInputs { input_map: HashMap::new() }
     }
     pub(crate) fn get_btn_down(&self, button_name: Button) -> bool {
         let input_action = self.input_map.get(&button_name);
@@ -21,17 +20,17 @@ impl ButtonInputs {
         return false;
     }
 
-    pub(crate) fn set_btn(&mut self, button_name: Button, action: InputAction) {
+    pub(crate) fn set_btn(&mut self, button_name: Button, input_action: InputAction) {
         self.input_map.entry(button_name)
-            .and_modify(|val| *val = action)
-            .or_insert(action);
+            .and_modify(|val| *val = input_action)
+            .or_insert(input_action);
     }
 
     pub(crate) fn get_btn_action(&self, button_name: Button) -> &InputAction {
         let input = self.input_map.get(&button_name);
-        return match input {
+        match input {
             None => &InputAction::None,
-            Some(action) => action,
+            Some(action) => action
         }
     }
 }
@@ -43,6 +42,7 @@ mod test {
     use crate::resources::inputs::button_inputs::ButtonInputs;
 
     use strum::IntoEnumIterator;
+
     #[test]
     fn can_make_struct() {
         let _inputs = ButtonInputs::new();

@@ -30,7 +30,7 @@ mod input_manager;
 mod prefabs;
 
 fn main() {
-    let mut game: Game = Game::new(3, 3, 30);
+    let mut game: Game = Game::new(3, 3, 15);
 
     game.spawn_prefab(Prefabs::PLAYER_CHARACTER);
 

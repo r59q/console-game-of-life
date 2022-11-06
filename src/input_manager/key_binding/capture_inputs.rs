@@ -23,7 +23,7 @@ fn handle_input(input: InputType, engine: &ConsoleEngine) -> InputAction {
             if engine.is_key_released(key_code) {
                 return Up
             }
-            InputAction::None
+            return InputAction::None
         }
         InputType::Mouse(mouse_button) => {
             if let Some((_, _)) = engine.get_mouse_press(mouse_button) {
