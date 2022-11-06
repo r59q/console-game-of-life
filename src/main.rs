@@ -15,6 +15,7 @@ use crate::prefabs::Prefabs;
 
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
+use crate::systems::axis_position_transform::axis_position_transform;
 use crate::systems::axis_velocity::axis_velocity;
 use crate::systems::character_renderer::{character_renderer, character_renderer_reset};
 use crate::systems::debugger::debugger;
@@ -80,7 +81,7 @@ fn stage_systems(game: &mut Game) {
     );
     game.add_stage_to_schedule("update", SystemStage::parallel()
         .with_system(movement_system)
-        .with_system(axis_velocity)
+        .with_system(axis_position_transform)
         .with_system(character_renderer_reset)
         .with_system(debugger),
     );
