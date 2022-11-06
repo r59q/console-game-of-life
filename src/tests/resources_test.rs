@@ -231,7 +231,6 @@ fn can_add_key_bindings() {
     assert!(matches!(inputs, Some(_)));
 }
 
-
 #[test]
 fn can_add_key_to_key_bindings() {
     let mut test_env = initialize();
@@ -256,7 +255,6 @@ fn can_add_key_to_key_bindings() {
     let verticals = keybindings.get_axial_bindings(Vertical);
     assert!(matches!(verticals, None));
 }
-
 
 #[test]
 fn can_add_button_inputs_resource() {
