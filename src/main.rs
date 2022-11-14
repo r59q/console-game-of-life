@@ -6,6 +6,7 @@ use game::Game;
 use resources::inputs::axis_inputs::AxisInputs;
 use resources::inputs::input_bindings::InputBindings;
 use resources::view_offset::ViewOffset;
+use systems::drag_view_offset::drag_view_offset;
 use systems::reset_axis_input::reset_axial_inputs;
 use crate::input_manager::axis::Axis::{Horizontal, Vertical};
 use crate::input_manager::buttons::Button::{Buy, Fire1, Fire2};
@@ -86,6 +87,7 @@ fn stage_systems(game: &mut Game) {
         .with_system(movement_system)
         .with_system(axis_position_transform)
         .with_system(character_renderer_reset)
+        .with_system(drag_view_offset)
         .with_system(debugger),
     );
     game.add_stage_to_schedule("pre-render", SystemStage::single_threaded()

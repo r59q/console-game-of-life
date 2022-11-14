@@ -74,6 +74,7 @@ impl MouseInputs {
 impl SharedInputBehaviour for MouseInputs {
     fn reset_inputs(&mut self) {
         self.mouse_input_map = Self::new().mouse_input_map;
+        self.drag_start_pos = self.mouse_position;
     }
 }
 
