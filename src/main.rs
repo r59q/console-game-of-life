@@ -5,6 +5,7 @@ use console_engine::MouseButton::{Left, Right};
 use game::Game;
 use resources::inputs::axis_inputs::AxisInputs;
 use resources::inputs::input_bindings::InputBindings;
+use resources::view_offset::ViewOffset;
 use systems::reset_axis_input::reset_axial_inputs;
 use crate::input_manager::axis::Axis::{Horizontal, Vertical};
 use crate::input_manager::buttons::Button::{Buy, Fire1, Fire2};
@@ -31,7 +32,7 @@ mod input_manager;
 mod prefabs;
 
 fn main() {
-    let mut game: Game = Game::new(3, 3, 15);
+    let mut game: Game = Game::new(3, 3, 30);
 
     game.spawn_prefab(Prefabs::PLAYER_CHARACTER);
 
@@ -39,13 +40,15 @@ fn main() {
 
     stage_systems(&mut game);
 
-
     game.start();
 }
 
 fn add_resources(game: &mut Game) {
     game.get_world_mut().insert_resource(Timer::new());
     game.get_world_mut().insert_resource(RenderTargets::new());
+    let mut view_offset = ViewOffset::new();
+    view_offset.set_offset(10, 5);
+    game.get_world_mut().insert_resource(view_offset);
 
     let bindings = bind_keys();
     game.get_world_mut().insert_resource(bindings);

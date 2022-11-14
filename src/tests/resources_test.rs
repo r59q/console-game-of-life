@@ -13,6 +13,7 @@ use crate::resources::inputs::button_inputs::ButtonInputs;
 use crate::resources::inputs::mouse_inputs::MouseInputs;
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
+use crate::resources::view_offset::ViewOffset;
 use crate::systems::reset_axis_input::reset_axial_inputs;
 use crate::systems::reset_mouse_input::reset_mouse_inputs;
 use crate::systems::timing::timing_system;
@@ -264,4 +265,37 @@ fn can_add_button_inputs_resource() {
 
     let inputs = test_env.game.get_world_mut().get_resource_mut::<ButtonInputs>();
     assert!(matches!(inputs, Some(_)));
+}
+
+
+#[test]
+fn can_add_view_offset_resource() {
+    let mut test_env = initialize();
+    let view_offset = ViewOffset::new();
+    test_env.game.get_world_mut().insert_resource(view_offset);
+
+    let offset_resource = test_env.game.get_world_mut().get_resource_mut::<ViewOffset>();
+    assert!(matches!(offset_resource, Some(_)));
+}
+
+#[test]
+fn can_set_view_offset_resource() {
+    let mut test_env = initialize();
+    let view_offset = ViewOffset::new();
+    test_env.game.get_world_mut().insert_resource(view_offset);
+
+    let inputs = test_env.game.get_world_mut().get_resource_mut::<ViewOffset>();
+    if let Some(mut resource) = inputs {
+        resource.set_offset(22, -23)
+    } else {
+        panic!("Could not find resource")
+    }
+    
+    let result = test_env.game.get_world_mut().get_resource::<ViewOffset>();
+    if let Some(resource) = result {
+        let offset = resource.get_offset();
+        assert_eq!((22, -23), offset)
+    } else {
+        panic!("Could not find resource")
+    }
 }
