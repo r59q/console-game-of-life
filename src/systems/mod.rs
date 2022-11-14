@@ -6,3 +6,4 @@ pub mod reset_mouse_input;
 pub mod debugger;
 pub mod character_renderer;
 pub mod axis_position_transform;
+pub mod drag_view_offset;
