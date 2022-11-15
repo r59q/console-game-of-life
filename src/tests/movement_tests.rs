@@ -307,3 +307,49 @@ fn moves_multiple_times_with_transform_system() {
     assert_eq!(pos1.x, 2.);
     assert_eq!(pos1.y, 2.);
 }
+
+#[test]
+fn can_pause_movement() {
+    let mut test_env = initialize_with_entity_and_timing_system();
+    
+    let moving_entity = test_env.game.get_world_mut().spawn()
+        .insert(Position {x:0., y:0.})
+        .insert(Velocity {x:1., y:1.}).id();
+
+    let pause_resource = PauseState::new();
+    test_env.game.get_world_mut().insert_resource(pause_resource);
+    test_env.game.add_stage_to_schedule(
+        "move",
+        SystemStage::parallel()
+            .with_system(movement_system)
+    );
+
+    test_env.game.run_schedule();
+
+    
+    let moved_position1 = test_env.game.get_world_ref()
+        .get_entity(moving_entity)
+        .unwrap().get::<Position>().unwrap();
+    
+    let moved_pos_x1 = moved_position1.x;
+    let moved_pos_y1 = moved_position1.y;
+
+    assert_ne!(moved_pos_x1, 0.);
+    assert_ne!(moved_pos_y1, 0.);
+        
+    let pause_state = test_env.game.get_world_mut().get_resource_mut::<PauseState>().unwrap();
+
+    pause_state.pause();
+    
+    test_env.game.run_schedule();
+
+    let moved_position2 = test_env.game.get_world_ref()
+        .get_entity(moving_entity)
+        .unwrap().get::<Position>().unwrap();
+    
+    let moved_pos_x2 = moved_position1.x;
+    let moved_pos_y2 = moved_position1.y;
+    
+    assert_eq!(moved_pos_y1, moved_pos_y2);
+    assert_eq!(moved_pos_x1, moved_pos_x2);
+}
