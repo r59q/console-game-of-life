@@ -4,5 +4,6 @@ use strum_macros::EnumIter;
 pub enum Button {
     Fire1,
     Fire2,
-    Buy
+    Buy,
+    Pause
 }
