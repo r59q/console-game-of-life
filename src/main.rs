@@ -5,6 +5,7 @@ use console_engine::MouseButton::{Left, Right};
 use game::Game;
 use resources::inputs::axis_inputs::AxisInputs;
 use resources::inputs::input_bindings::InputBindings;
+use resources::pause_state::PauseState;
 use resources::view_offset::ViewOffset;
 use systems::drag_view_offset::drag_view_offset;
 use systems::reset_axis_input::reset_axial_inputs;
@@ -47,6 +48,7 @@ fn main() {
 fn add_resources(game: &mut Game) {
     game.get_world_mut().insert_resource(Timer::new());
     game.get_world_mut().insert_resource(RenderTargets::new());
+    game.get_world_mut().insert_resource(PauseState::new());
     let mut view_offset = ViewOffset::new();
     view_offset.set_offset(10, 5);
     game.get_world_mut().insert_resource(view_offset);

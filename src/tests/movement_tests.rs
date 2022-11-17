@@ -1,6 +1,7 @@
 use crate::components::controllable::Controllable;
 use crate::components::position::Position;
 use crate::components::velocity::Velocity;
+use crate::resources::pause_state::PauseState;
 use crate::resources::timer::Timer;
 use crate::systems::axis_position_transform::axis_position_transform;
 use crate::systems::axis_velocity::axis_velocity;
@@ -28,6 +29,9 @@ fn can_add_movement_system() {
 #[test]
 fn no_velocity_does_not_change_position() {
     let mut test_env = initialize();
+    
+    test_env.game.get_world_mut().insert_resource(PauseState::new());
+    
     let before_x = 0.;
     let before_y = 0.;
 
@@ -62,6 +66,9 @@ fn no_velocity_does_not_change_position() {
 #[test]
 fn some_velocity_does_change_position() {
     let mut test_env = initialize();
+    test_env.game.get_world_mut().insert_resource(PauseState::new());
+
+
     let before_x = 0.;
     let before_y = 0.;
 
@@ -96,6 +103,7 @@ fn some_velocity_does_change_position() {
 #[test]
 fn different_velocities_makes_different_changes() {
     let mut test_env = initialize_with_entity_and_timing_system();
+    test_env.game.get_world_mut().insert_resource(PauseState::new());
 
     // Create some entities
     let entity1 = test_env.game.get_world_mut().spawn()
@@ -129,6 +137,7 @@ fn can_add_axis_velocity_system() {
     let mut test_env = initialize_with_entity_and_timing_system();
 
     test_env.game.get_world_mut().insert_resource(AxisInputs::new());
+    test_env.game.get_world_mut().insert_resource(PauseState::new());
 
     // Create some entities
     let entity1 = test_env.game.get_world_mut().spawn()
@@ -166,6 +175,7 @@ fn axis_velocity_without_controllable_component_should_not_change_pos() {
     let mut test_env = initialize_with_entity_and_timing_system();
 
     test_env.game.get_world_mut().insert_resource(AxisInputs::new());
+    test_env.game.get_world_mut().insert_resource(PauseState::new());
 
     // Create some entities
     let entity1 = test_env.game.get_world_mut().spawn()
@@ -202,6 +212,7 @@ fn can_add_axis_position_transform_system() {
     let mut test_env = initialize_with_entity_and_timing_system();
 
     test_env.game.get_world_mut().insert_resource(AxisInputs::new());
+    test_env.game.get_world_mut().insert_resource(PauseState::new());
 
     // Create some entities
     let entity1 = test_env.game.get_world_mut().spawn()
@@ -239,6 +250,7 @@ fn axis_position_transform_system_does_not_work_without_controllable_component()
     let mut test_env = initialize_with_entity_and_timing_system();
 
     test_env.game.get_world_mut().insert_resource(AxisInputs::new());
+    test_env.game.get_world_mut().insert_resource(PauseState::new());
 
     // Create some entities
     let entity1 = test_env.game.get_world_mut().spawn()
@@ -275,6 +287,7 @@ fn moves_multiple_times_with_transform_system() {
     let mut test_env = initialize_with_entity_and_timing_system();
 
     test_env.game.get_world_mut().insert_resource(AxisInputs::new());
+    test_env.game.get_world_mut().insert_resource(PauseState::new());
 
     // Create some entities
     let entity1 = test_env.game.get_world_mut().spawn()
@@ -306,4 +319,50 @@ fn moves_multiple_times_with_transform_system() {
     let pos1 = game.get_world_ref().entity(entity1).get::<Position>().unwrap();
     assert_eq!(pos1.x, 2.);
     assert_eq!(pos1.y, 2.);
+}
+
+#[test]
+fn can_pause_movement() {
+    let mut test_env = initialize_with_entity_and_timing_system();
+    
+    let moving_entity = test_env.game.get_world_mut().spawn()
+        .insert(Position {x:0., y:0.})
+        .insert(Velocity {x:1., y:1.}).id();
+
+    let pause_resource = PauseState::new();
+    test_env.game.get_world_mut().insert_resource(pause_resource);
+    test_env.game.add_stage_to_schedule(
+        "move",
+        SystemStage::parallel()
+            .with_system(movement_system)
+    );
+
+    test_env.game.run_schedule();
+
+    
+    let moved_position1 = test_env.game.get_world_ref()
+        .get_entity(moving_entity)
+        .unwrap().get::<Position>().unwrap();
+    
+    let moved_pos_x1 = moved_position1.x;
+    let moved_pos_y1 = moved_position1.y;
+
+    assert_ne!(moved_pos_x1, 0.);
+    assert_ne!(moved_pos_y1, 0.);
+        
+    let mut pause_state = test_env.game.get_world_mut().get_resource_mut::<PauseState>().unwrap();
+
+    pause_state.pause();
+    
+    test_env.game.run_schedule();
+
+    let moved_position2 = test_env.game.get_world_ref()
+        .get_entity(moving_entity)
+        .unwrap().get::<Position>().unwrap();
+    
+    let moved_pos_x2 = moved_position2.x;
+    let moved_pos_y2 = moved_position2.y;
+    
+    assert_eq!(moved_pos_y1, moved_pos_y2);
+    assert_eq!(moved_pos_x1, moved_pos_x2);
 }
