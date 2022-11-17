@@ -246,6 +246,46 @@ fn can_add_axis_position_transform_system() {
 }
 
 #[test]
+fn cannot_move_with_axis_transform_system_when_paused() {
+    let mut test_env = initialize_with_entity_and_timing_system();
+
+    test_env.game.get_world_mut().insert_resource(AxisInputs::new());
+    let mut pause_state = PauseState::new();
+    pause_state.pause();
+    test_env.game.get_world_mut().insert_resource(pause_state);
+
+    // Create some entities
+    let entity1 = test_env.game.get_world_mut().spawn()
+        .insert(Position { x: 0., y: 0. })
+        .insert(Velocity { x: 0., y: 0. })
+        .insert(Controllable { }).id();
+
+    // Run the game
+    test_env.game.add_stage_to_schedule(
+        "preupdate",
+        SystemStage::parallel()
+            .with_system(axis_position_transform)
+    );
+    test_env.game.add_stage_to_schedule(
+        "update",
+        SystemStage::parallel()
+            .with_system(movement_system)
+    );
+
+    let mut axis_inputs = test_env.game.get_world_mut().get_resource_mut::<AxisInputs>().unwrap();
+
+    axis_inputs.set(Horizontal,1.);
+    axis_inputs.set(Vertical,1.);
+
+    test_env.game.run_schedule();
+
+    let game = test_env.game;
+    let pos1 = game.get_world_ref().entity(entity1).get::<Position>().unwrap();
+    assert_eq!(pos1.x, 0.);
+    assert_eq!(pos1.y, 0.);
+}
+
+#[test]
 fn axis_position_transform_system_does_not_work_without_controllable_component() {
     let mut test_env = initialize_with_entity_and_timing_system();
 
