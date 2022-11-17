@@ -4,9 +4,11 @@ use console_engine::MouseButton;
 
 use crate::input_manager::axis::Axis::Horizontal;
 use crate::input_manager::axis::Axis::Vertical;
+use crate::input_manager::buttons::Button;
 use crate::input_manager::input_action::InputAction;
 use crate::input_manager::input_types::InputType::Key;
 
+use crate::input_manager::key_binding::button_binding::ButtonBinding;
 use crate::resources::inputs::axis_inputs::AxisInputs;
 use crate::resources::inputs::input_bindings::InputBindings;
 use crate::resources::inputs::button_inputs::ButtonInputs;
@@ -14,6 +16,7 @@ use crate::resources::inputs::mouse_inputs::MouseInputs;
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
 use crate::resources::view_offset::ViewOffset;
+use crate::systems::pause_toggle::pause_toggle;
 use crate::systems::reset_axis_input::reset_axial_inputs;
 use crate::systems::reset_mouse_input::reset_mouse_inputs;
 use crate::systems::timing::timing_system;
@@ -298,4 +301,26 @@ fn can_set_view_offset_resource() {
     } else {
         panic!("Could not find resource")
     }
+}
+
+#[test]
+fn can_pause_by_button() {
+    let mut test_env = initialize();
+    test_env.game.get_world_mut().insert_resource(ButtonInputs::new());
+    test_env.game.get_world_mut().insert_resource(PauseState::new());
+
+    test_env.game.add_stage_to_schedule("progress", SystemStage::parallel()
+        .with_system(pause_toggle));
+
+    test_env.game.get_world_mut().get_resource_mut::<ButtonInputs>().unwrap().set_btn(Button::Pause, InputAction::Down);
+
+    let pause_state1 = test_env.game.get_world_ref().get_resource::<PauseState>().unwrap();
+
+    assert!(!pause_state1.is_paused());
+
+    test_env.game.run_schedule();
+
+    let pause_state2 = test_env.game.get_world_ref().get_resource::<PauseState>().unwrap();
+
+    assert!(pause_state2.is_paused());
 }

@@ -8,9 +8,10 @@ use resources::inputs::input_bindings::InputBindings;
 use resources::pause_state::PauseState;
 use resources::view_offset::ViewOffset;
 use systems::drag_view_offset::drag_view_offset;
+use systems::pause_toggle::pause_toggle;
 use systems::reset_axis_input::reset_axial_inputs;
 use crate::input_manager::axis::Axis::{Horizontal, Vertical};
-use crate::input_manager::buttons::Button::{Buy, Fire1, Fire2};
+use crate::input_manager::buttons::Button::{Buy, Fire1, Fire2, Pause};
 use crate::input_manager::input_types::InputType::{Key, Mouse};
 use resources::inputs::button_inputs::ButtonInputs;
 use resources::inputs::mouse_inputs::MouseInputs;
@@ -66,6 +67,7 @@ fn bind_keys() -> InputBindings {
     bindings.bind_to_button(Fire1, Mouse(Left));
     bindings.bind_to_button(Fire2, Mouse(Right));
     bindings.bind_to_button(Buy, Key(KeyCode::Char('b')));
+    bindings.bind_to_button(Pause, Key(KeyCode::Char('p')));
 
     bindings.bind_to_axis(
         Horizontal,
@@ -89,6 +91,7 @@ fn stage_systems(game: &mut Game) {
         .with_system(movement_system)
         .with_system(axis_position_transform)
         .with_system(character_renderer_reset)
+        .with_system(pause_toggle)
         .with_system(drag_view_offset)
         .with_system(debugger),
     );
