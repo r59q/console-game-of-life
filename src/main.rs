@@ -9,6 +9,7 @@ use resources::pause_state::PauseState;
 use resources::view_offset::ViewOffset;
 use systems::drag_view_offset::drag_view_offset;
 use systems::pause_toggle::pause_toggle;
+use systems::place_under_mouse::place_under_mouse;
 use systems::reset_axis_input::reset_axial_inputs;
 use crate::input_manager::axis::Axis::{Horizontal, Vertical};
 use crate::input_manager::buttons::Button::{Buy, Fire1, Fire2, Pause};
@@ -38,6 +39,7 @@ fn main() {
     let mut game: Game = Game::new(3, 3, 30);
 
     game.spawn_prefab(Prefabs::PLAYER_CHARACTER);
+    game.spawn_prefab(Prefabs::PLACEABLE_CELL);
 
     add_resources(&mut game);
 
@@ -51,7 +53,7 @@ fn add_resources(game: &mut Game) {
     game.get_world_mut().insert_resource(RenderTargets::new());
     game.get_world_mut().insert_resource(PauseState::new());
     let mut view_offset = ViewOffset::new();
-    view_offset.set_offset(10, 5);
+    view_offset.set_offset(0, 0);
     game.get_world_mut().insert_resource(view_offset);
 
     let bindings = bind_keys();
@@ -92,6 +94,7 @@ fn stage_systems(game: &mut Game) {
         .with_system(axis_position_transform)
         .with_system(character_renderer_reset)
         .with_system(pause_toggle)
+        .with_system(place_under_mouse)
         .with_system(drag_view_offset)
         .with_system(debugger),
     );

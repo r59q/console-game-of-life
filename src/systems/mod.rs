@@ -8,3 +8,4 @@ pub mod character_renderer;
 pub mod axis_position_transform;
 pub mod drag_view_offset;
 pub mod pause_toggle;
+pub mod place_under_mouse;
