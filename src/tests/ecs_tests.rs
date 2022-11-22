@@ -187,7 +187,7 @@ fn can_add_placeable_component() {
 
     let entity = test_env.entity;
 
-    let placeable_component = Placeable {};
+    let placeable_component = Placeable { replacement: None };
 
     test_env.game.get_world_mut().entity_mut(entity)
         .insert(placeable_component);

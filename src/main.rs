@@ -11,8 +11,9 @@ use systems::drag_view_offset::drag_view_offset;
 use systems::pause_toggle::pause_toggle;
 use systems::place_under_mouse::place_under_mouse;
 use systems::reset_axis_input::reset_axial_inputs;
+use systems::spawn_placeables::spawn_placeables;
 use crate::input_manager::axis::Axis::{Horizontal, Vertical};
-use crate::input_manager::buttons::Button::{Buy, Fire1, Fire2, Pause};
+use crate::input_manager::buttons::Button::{Buy, Fire1, Fire2, Pause, Place};
 use crate::input_manager::input_types::InputType::{Key, Mouse};
 use resources::inputs::button_inputs::ButtonInputs;
 use resources::inputs::mouse_inputs::MouseInputs;
@@ -70,6 +71,7 @@ fn bind_keys() -> InputBindings {
     bindings.bind_to_button(Fire2, Mouse(Right));
     bindings.bind_to_button(Buy, Key(KeyCode::Char('b')));
     bindings.bind_to_button(Pause, Key(KeyCode::Char('p')));
+    bindings.bind_to_button(Place, Key(KeyCode::Char('q')));
 
     bindings.bind_to_axis(
         Horizontal,
@@ -95,6 +97,7 @@ fn stage_systems(game: &mut Game) {
         .with_system(character_renderer_reset)
         .with_system(pause_toggle)
         .with_system(place_under_mouse)
+        .with_system(spawn_placeables)
         .with_system(drag_view_offset)
         .with_system(debugger),
     );
