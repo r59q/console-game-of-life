@@ -6,6 +6,7 @@ use crate::resources::timer::Timer;
 use crate::systems::axis_position_transform::axis_position_transform;
 use crate::systems::axis_velocity::axis_velocity;
 use crate::systems::movement::movement_system;
+use crate::systems::place_under_mouse::place_under_mouse;
 use crate::systems::timing::timing_system;
 
 use super::*;
@@ -405,4 +406,16 @@ fn can_pause_movement() {
     
     assert_eq!(moved_pos_y1, moved_pos_y2);
     assert_eq!(moved_pos_x1, moved_pos_x2);
+}
+
+#[test]
+fn can_add_place_under_mouse() {
+    let mut test_env = initialize();
+
+    test_env.game.add_stage_to_schedule("update", SystemStage::parallel()
+        .with_system(place_under_mouse));
+
+    let stage = test_env.game.get_schedule_mut().get_stage::<SystemStage>(&"update").unwrap();
+
+    assert!(!matches!(stage.parallel_systems().first(), None))
 }

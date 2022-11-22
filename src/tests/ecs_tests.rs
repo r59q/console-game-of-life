@@ -1,6 +1,6 @@
 use bevy_ecs::{prelude::{Component, Entity}, world::World, system::Query, schedule::{Schedule, SystemStage}};
 
-use crate::components::{position::Position, velocity::Velocity};
+use crate::components::{position::Position, velocity::Velocity, placeable::Placeable};
 use crate::components::controllable::Controllable;
 
 use super::*;
@@ -179,4 +179,22 @@ fn can_add_controllable_component() {
     let world_controllable = world_entity.get::<Controllable>();
 
     assert!(!world_controllable.is_none());
+}
+
+#[test]
+fn can_add_placeable_component() {
+    let mut test_env = initialize_with_entity();
+
+    let entity = test_env.entity;
+
+    let placeable_component = Placeable {};
+
+    test_env.game.get_world_mut().entity_mut(entity)
+        .insert(placeable_component);
+
+    let world_entity = test_env.game.get_world_mut().entity(entity);
+
+    let world_placeable = world_entity.get::<Placeable>();
+
+    assert!(!world_placeable.is_none());
 }

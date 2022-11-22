@@ -38,6 +38,7 @@ fn main() {
     let mut game: Game = Game::new(3, 3, 30);
 
     game.spawn_prefab(Prefabs::PLAYER_CHARACTER);
+    game.spawn_prefab(Prefabs::CELL);
 
     add_resources(&mut game);
 
@@ -51,7 +52,7 @@ fn add_resources(game: &mut Game) {
     game.get_world_mut().insert_resource(RenderTargets::new());
     game.get_world_mut().insert_resource(PauseState::new());
     let mut view_offset = ViewOffset::new();
-    view_offset.set_offset(10, 5);
+    view_offset.set_offset(0, 0);
     game.get_world_mut().insert_resource(view_offset);
 
     let bindings = bind_keys();
