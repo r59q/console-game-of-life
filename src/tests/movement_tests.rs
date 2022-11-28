@@ -1,9 +1,10 @@
 use console_engine::MouseButton;
 
 use crate::components::controllable::Controllable;
-use crate::components::placeable::Placeable;
+use crate::components::placeable::{Placeable, self};
 use crate::components::position::Position;
 use crate::components::velocity::Velocity;
+use crate::input_manager::buttons::Button;
 use crate::resources::inputs::mouse_inputs;
 use crate::resources::pause_state::PauseState;
 use crate::resources::timer::Timer;
@@ -11,6 +12,7 @@ use crate::systems::axis_position_transform::axis_position_transform;
 use crate::systems::axis_velocity::axis_velocity;
 use crate::systems::movement::movement_system;
 use crate::systems::place_under_mouse::place_under_mouse;
+use crate::systems::spawn_placeables::spawn_placeables;
 use crate::systems::timing::timing_system;
 
 use super::*;
@@ -439,7 +441,7 @@ fn entity_that_is_placeable_moves_when_mouse_moves() {
 
     let placing_entity = test_env.game.get_world_mut().spawn()
         .insert(Position {x:0., y:0.})
-        .insert(Placeable {}).id();
+        .insert(Placeable { replacement: None }).id();
 
     test_env.game.add_stage_to_schedule("update", SystemStage::parallel()
         .with_system(place_under_mouse));
@@ -474,7 +476,7 @@ fn entity_that_is_placeable_moves_under_mouse() {
     
     let placing_entity = test_env.game.get_world_mut().spawn()
         .insert(Position {x:0., y:0.})
-        .insert(Placeable {}).id();
+        .insert(Placeable { replacement: None }).id();
 
     test_env.game.add_stage_to_schedule("update", SystemStage::parallel()
         .with_system(place_under_mouse));
@@ -510,7 +512,7 @@ fn entity_that_is_placeable_moves_under_mouse_with_offset() {
 
     let placing_entity = test_env.game.get_world_mut().spawn()
         .insert(Position {x:0., y:0.})
-        .insert(Placeable {}).id();
+        .insert(Placeable { replacement: None }).id();
 
     test_env.game.add_stage_to_schedule("update", SystemStage::parallel()
         .with_system(place_under_mouse));
@@ -548,4 +550,72 @@ fn entity_that_is_not_placeable_does_not_move_under_mouse() {
     let pos_x = world_entity.get::<Position>().unwrap().x;
     let pos_y = world_entity.get::<Position>().unwrap().y;
     assert_eq!((0., 0.), (pos_x, pos_y))
+}
+
+#[test]
+fn can_add_spawn_placeable_system() {
+    let mut test_env = initialize();
+
+    let mut button_inputs = ButtonInputs::new();
+    button_inputs.set_btn(Button::Place, input_manager::input_action::InputAction::Down);
+    test_env.game.get_world_mut().insert_resource(button_inputs);
+
+    let placing_entity = test_env.game.get_world_mut().spawn()
+        .insert(Position {x:0., y:0.})
+        .insert(Placeable { replacement: None }).id();
+
+    test_env.game.add_stage_to_schedule("update", SystemStage::parallel()
+        .with_system(spawn_placeables));
+    
+    test_env.game.run_schedule();
+
+    let world_entity = test_env.game.get_world_ref().get_entity(placing_entity);
+
+    assert!(!matches!(world_entity, None));
+}
+
+#[test]
+fn placeable_gets_spawned() {
+    let mut test_env = initialize();
+
+    let mut button_inputs = ButtonInputs::new();
+    button_inputs.set_btn(Button::Place, input_manager::input_action::InputAction::Down);
+    test_env.game.get_world_mut().insert_resource(button_inputs);
+
+
+    test_env.game.get_world_mut().spawn()
+        .insert(Position {x:0., y:0.})
+        .insert(Placeable { replacement: Some(Prefabs::CELL) });
+
+    test_env.game.add_stage_to_schedule("update", SystemStage::parallel()
+        .with_system(spawn_placeables));
+    
+    test_env.game.run_schedule();
+
+    let entity_count = test_env.game.get_world_ref().entities().len();
+
+    assert_eq!(entity_count, 2);
+}
+
+#[test]
+fn placeable_doesnt_spawn_if_action_not_down() {
+    let mut test_env = initialize();
+
+    let mut button_inputs = ButtonInputs::new();
+    button_inputs.set_btn(Button::Place, input_manager::input_action::InputAction::Up);
+    test_env.game.get_world_mut().insert_resource(button_inputs);
+
+
+    test_env.game.get_world_mut().spawn()
+        .insert(Position {x:0., y:0.})
+        .insert(Placeable { replacement: Some(Prefabs::CELL) });
+
+    test_env.game.add_stage_to_schedule("update", SystemStage::parallel()
+        .with_system(spawn_placeables));
+    
+    test_env.game.run_schedule();
+
+    let entity_count = test_env.game.get_world_ref().entities().len();
+
+    assert_eq!(entity_count, 1);
 }
