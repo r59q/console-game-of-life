@@ -20,7 +20,18 @@ pub struct TestEnv {
 pub fn initialize() -> TestEnv {
     // Not tied to game.
     let entity = World::new().spawn().id();
-    return TestEnv { game: Game::new(1,1,1), entity };
+    let test_env = TestEnv { game: Game::new(1,1,1), entity };
+    return test_env;
+}
+
+pub fn initialize_game_paused() -> TestEnv {
+    // Not tied to game.
+    let entity = World::new().spawn().id();
+    let mut test_env = TestEnv { game: Game::new(1,1,1), entity };
+    let mut pause_state = PauseState::new();
+    pause_state.pause();
+    test_env.game.get_world_mut().insert_resource(pause_state);
+    return test_env;
 }
 
 pub fn initialize_with_entity() -> TestEnv {
