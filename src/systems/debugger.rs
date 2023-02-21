@@ -8,8 +8,9 @@ use crate::input_manager::buttons::Button::{Buy};
 use crate::resources::inputs::axis_inputs::AxisInputs;
 use crate::resources::inputs::button_inputs::ButtonInputs;
 use crate::resources::inputs::mouse_inputs::MouseInputs;
+use crate::resources::pause_state::PauseState;
 
-pub fn debugger(axial_inputs: Res<AxisInputs>, mut mouse_inputs: ResMut<MouseInputs>, button_inputs: Res<ButtonInputs>) {
+pub fn debugger(axial_inputs: Res<AxisInputs>, mut mouse_inputs: ResMut<MouseInputs>, button_inputs: Res<ButtonInputs>, pause_state: Res<PauseState>) {
 
     for axis in Axis::iter() {
         let val = axial_inputs.get(&axis);
@@ -23,6 +24,10 @@ pub fn debugger(axial_inputs: Res<AxisInputs>, mut mouse_inputs: ResMut<MouseInp
     print!("\t {:?}", mouse_inputs.get_position());
 
     let fire1_action = button_inputs.get_btn_action(Buy);
+
+    print!("\t {:?}", fire1_action);
+
+    print!("\t Paused:{:?}", pause_state.is_paused());
 
     print!("\t {:?}", fire1_action);
     // let a = input.get_key_down_or_held(KeyCode::Char('a'));

@@ -7,9 +7,12 @@ use crate::systems::timing::timing_system;
 
 use super::*;
 
-mod ecs_tests;
-mod movement_tests;
-mod resources_test;
+mod ecs_integration_tests;
+mod resources_tests;
+mod place_under_mouse_tests;
+mod spawn_placeable_entities_tests;
+mod movement_system_tests;
+mod axis_transform_position_system_tests;
 mod rendering_tests;
 
 pub struct TestEnv {
