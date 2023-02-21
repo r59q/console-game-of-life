@@ -37,5 +37,6 @@ mod test {
         let positioned_entities = PositionedEntities::new();
         let mut test_env = initialize();
         test_env.game.spawn_prefab(Prefabs::PLACEABLE_CELL);
+        assert!(false);
     }
 }
