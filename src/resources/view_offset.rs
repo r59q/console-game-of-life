@@ -22,7 +22,7 @@ mod test {
 
     #[test]
     fn can_make_resource() {
-        let view_offset: ViewOffset = ViewOffset::new();
+        ViewOffset::new();
     }
     
     #[test]

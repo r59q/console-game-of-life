@@ -1,13 +1,8 @@
 mod view_offset_tests;
 mod render_targets_tests;
 
-use console_engine::MouseButton;
-
 use crate::components::rendering_character::RenderingCharacter;
-use crate::input_manager::input_action::InputAction;
-use crate::resources::view_offset;
 use crate::systems::character_renderer::character_renderer;
-use crate::systems::drag_view_offset::drag_view_offset;
 
 use super::*;
 

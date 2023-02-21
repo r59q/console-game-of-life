@@ -69,7 +69,7 @@ mod test {
     fn can_pause_multiple_times() {
         let mut pause_state = PauseState::new();
 
-        for n in 0..100 {
+        for _n in 0..100 {
             pause_state.pause();
             assert_eq!(pause_state.is_paused(), true)
         }
@@ -79,7 +79,7 @@ mod test {
     fn can_unpause_multiple_times() {
         let mut pause_state = PauseState::new();
 
-        for n in 0..100 {
+        for _n in 0..100 {
             pause_state.unpause();
             assert_eq!(pause_state.is_paused(), false)
         }

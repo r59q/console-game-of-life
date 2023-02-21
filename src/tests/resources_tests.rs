@@ -8,7 +8,6 @@ use crate::input_manager::buttons::Button;
 use crate::input_manager::input_action::InputAction;
 use crate::input_manager::input_types::InputType::Key;
 
-use crate::input_manager::key_binding::button_binding::ButtonBinding;
 use crate::resources::inputs::axis_inputs::AxisInputs;
 use crate::resources::inputs::input_bindings::InputBindings;
 use crate::resources::inputs::button_inputs::ButtonInputs;

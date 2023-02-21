@@ -1,7 +1,6 @@
 use bevy_ecs::schedule::SystemStage;
-use console_engine::MouseButton;
 
-use crate::{tests::initialize, systems::drag_view_offset::drag_view_offset, resources::{view_offset::ViewOffset, inputs::mouse_inputs::MouseInputs}, input_manager::input_action::InputAction};
+use crate::{tests::initialize, systems::drag_view_offset::drag_view_offset, resources::{view_offset::ViewOffset, inputs::mouse_inputs::MouseInputs}};
 
 #[test]
 fn can_add_view_offset_dragging_system() {

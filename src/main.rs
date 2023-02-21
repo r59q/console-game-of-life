@@ -22,7 +22,6 @@ use crate::prefabs::Prefabs;
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
 use crate::systems::axis_position_transform::axis_position_transform;
-use crate::systems::axis_velocity::axis_velocity;
 use crate::systems::character_renderer::{character_renderer, character_renderer_reset};
 use crate::systems::debugger::debugger;
 use crate::systems::movement::movement_system;
