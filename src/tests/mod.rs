@@ -14,6 +14,7 @@ mod spawn_placeable_entities_tests;
 mod movement_system_tests;
 mod axis_transform_position_system_tests;
 mod rendering_tests;
+mod game_tests;
 
 pub struct TestEnv {
     pub game: Game,

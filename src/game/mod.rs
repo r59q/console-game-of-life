@@ -1,4 +1,4 @@
-use bevy_ecs::prelude::{Schedule, Stage, SystemStage};
+use bevy_ecs::prelude::{Schedule, Stage, SystemStage, Entity};
 use bevy_ecs::schedule::StageLabel;
 use bevy_ecs::world::World;
 use console_engine::{ConsoleEngine, KeyCode};
@@ -38,8 +38,8 @@ impl Game {
         return &mut self.world;
     }
 
-    pub fn spawn_prefab(&mut self, prefab: Prefab) {
-        prefab(self.get_world_mut().spawn());
+    pub fn spawn_prefab(&mut self, prefab: Prefab) -> Entity {
+        prefab(self.get_world_mut().spawn())
     }
 
     pub fn get_world_ref(&self) -> &World {
