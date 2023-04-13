@@ -85,6 +85,6 @@ mod test {
 
     #[test]
     fn can_get_neighbours_of_entity() {
-        assert!(false);
+        todo!("Should add a function for grabbing all entities in a 3x3 square, except the centre piece")
     }
 }
