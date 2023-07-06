@@ -1,8 +1,10 @@
-use bevy_ecs::prelude::{Schedule, Stage, SystemStage, Entity};
+use std::borrow::BorrowMut;
+
+use bevy_ecs::prelude::{Entity, Schedule, Stage, SystemStage};
 use bevy_ecs::schedule::StageLabel;
-use bevy_ecs::world::World;
-use console_engine::{ConsoleEngine, KeyCode};
+use bevy_ecs::world::{EntityMut, World};
 use console_engine::pixel::pxl;
+use console_engine::{ConsoleEngine, KeyCode};
 
 use crate::input_manager::key_binding;
 use crate::prefabs::Prefab;
@@ -19,12 +21,20 @@ pub struct Game {
 
 impl Game {
     pub fn new(min_width: u32, min_height: u32, target_fps: u32) -> Self {
-        let c_engine = console_engine::ConsoleEngine::init_fill_require(min_width, min_height, target_fps);
+        let c_engine =
+            console_engine::ConsoleEngine::init_fill_require(min_width, min_height, target_fps);
         match c_engine {
             Ok(engine) => {
-                return Self { is_started: false, world: World::new(), engine, schedule: Schedule::default() };
+                return Self {
+                    is_started: false,
+                    world: World::new(),
+                    engine,
+                    schedule: Schedule::default(),
+                };
             }
-            Err(error) => { panic!("{}", error); }
+            Err(error) => {
+                panic!("{}", error);
+            }
         }
     }
 
@@ -58,7 +68,11 @@ impl Game {
         self.schedule.run(&mut self.world)
     }
 
-    pub fn add_stage_to_schedule(&mut self, stage_label: impl StageLabel, stage: SystemStage) -> () {
+    pub fn add_stage_to_schedule(
+        &mut self,
+        stage_label: impl StageLabel,
+        stage: SystemStage,
+    ) -> () {
         self.schedule.add_stage(stage_label, stage);
     }
 
@@ -87,7 +101,7 @@ impl Game {
     }
 
     // todo: have step for forcing dependencies such as ViewOffset and RenderTargets
-    fn game_render(&mut self) { 
+    fn game_render(&mut self) {
         let view_offset = self.get_world_ref().get_resource::<ViewOffset>();
         let render_targets = self.get_world_ref().get_resource::<RenderTargets>();
         if let None = render_targets {
@@ -107,7 +121,8 @@ impl Game {
             let mut int_pos = pos.to_position_int();
             int_pos.x = int_pos.x - x_offset;
             int_pos.y = int_pos.y - y_offset;
-            self.engine.set_pxl(int_pos.x as i32, int_pos.y as i32, pxl(char))
+            self.engine
+                .set_pxl(int_pos.x as i32, int_pos.y as i32, pxl(char))
         }
         self.engine.draw();
     }
