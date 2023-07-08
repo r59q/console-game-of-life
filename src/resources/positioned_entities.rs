@@ -15,22 +15,27 @@ impl PositionedEntities {
         };
     }
 
-    fn put(&mut self, entity_ref: &EntityRef) -> () {
+    pub fn put_entity_ref(&mut self, entity_ref: &EntityRef) -> () {
         let position = entity_ref
             .get::<Position>()
             .expect("Could not put entity into PositionedEntities map. No position component!");
+        let entity = entity_ref.id();
+        self.put_entity(entity, *position)
+    }
+
+    pub fn put_entity(&mut self, entity: Entity, position: Position) -> () {
         let x: i32 = position.x as i32;
         let y: i32 = position.y as i32;
         let grid_pos = (x, y);
-        let entity = entity_ref.id();
         self.entities.insert(grid_pos, entity);
     }
 
-    fn get(&self, grid_pos: &(i32, i32)) -> Option<&Entity> {
+    // Todo: Why '&' grid_pos?
+    pub fn get(&self, grid_pos: &(i32, i32)) -> Option<&Entity> {
         self.entities.get(grid_pos)
     }
 
-    fn get_neighbours_of_position(&self, grid_pos: (i32, i32)) -> Vec<&Entity> {
+    pub fn get_neighbours_of_position(&self, grid_pos: (i32, i32)) -> Vec<&Entity> {
         let mut result = Vec::<&Entity>::new();
         for x_offset in -1..=1 {
             for y_offset in -1..=1 {
@@ -45,13 +50,21 @@ impl PositionedEntities {
         }
         result
     }
+
+    pub fn clear(&mut self) -> () {
+        self.entities.clear();
+    }
 }
 
 #[cfg(test)]
 mod test {
     use std::borrow::{Borrow, BorrowMut};
 
-    use bevy_ecs::{entity::EntityLocation, prelude::Entity, world::World};
+    use bevy_ecs::{
+        entity::EntityLocation,
+        prelude::Entity,
+        world::{EntityRef, World},
+    };
 
     use crate::{
         components::position::Position,
@@ -83,7 +96,7 @@ mod test {
         let mut test_env = initialize();
         let entity = test_env.game.spawn_prefab(Prefabs::PLACEABLE_CELL);
         let entity_ref = test_env.game.get_world_ref().entity(entity);
-        positioned_entities.put(&entity_ref);
+        positioned_entities.put_entity_ref(&entity_ref);
     }
 
     #[test]
@@ -92,7 +105,7 @@ mod test {
         let mut test_env = initialize();
         let entity = test_env.game.spawn_prefab(Prefabs::PLACEABLE_CELL);
         let entity_ref = test_env.game.get_world_ref().entity(entity);
-        positioned_entities.put(&entity_ref);
+        positioned_entities.put_entity_ref(&entity_ref);
         let position = entity_ref.get::<Position>().unwrap();
         let grid_pos = (position.x as i32, position.y as i32);
         let mapped_entity = positioned_entities.get(&grid_pos);
@@ -107,35 +120,68 @@ mod test {
         let mut test_env = initialize();
 
         let center_entity_grid_pos = (0, 0);
-        place_entity_at(
+        let entity1 = place_entity_at(
             &mut test_env,
-            &mut positioned_entities,
             center_entity_grid_pos.0 as f64,
             center_entity_grid_pos.1 as f64,
         );
-        place_entity_at(&mut test_env, &mut positioned_entities, 1., 1.);
-        place_entity_at(&mut test_env, &mut positioned_entities, 1., 0.);
-        place_entity_at(&mut test_env, &mut positioned_entities, 0., 1.);
+        let entity2 = place_entity_at(&mut test_env, 1., 1.);
+        let entity3 = place_entity_at(&mut test_env, 1., 0.);
+        let entity4 = place_entity_at(&mut test_env, 0., 1.);
+        let entity5 = place_entity_at(&mut test_env, 10., 10.); // Not it's neighbour
+
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity1));
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity2));
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity3));
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity4));
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity5));
+
         let neighbour_entities =
             positioned_entities.get_neighbours_of_position(center_entity_grid_pos);
 
-        assert_ne!(0, neighbour_entities.len());
         assert_eq!(3, neighbour_entities.len());
     }
 
-    fn place_entity_at(
-        test_env: &mut TestEnv,
-        positioned_entities: &mut PositionedEntities,
-        x: f64,
-        y: f64,
-    ) -> Entity {
-        let entity = test_env
+    #[test]
+    fn can_clear_entities() {
+        let mut positioned_entities = PositionedEntities::new();
+        let mut test_env = initialize();
+
+        let center_entity_grid_pos = (0, 0);
+        let entity1 = place_entity_at(
+            &mut test_env,
+            center_entity_grid_pos.0 as f64,
+            center_entity_grid_pos.1 as f64,
+        );
+        let entity2 = place_entity_at(&mut test_env, 1., 1.);
+        let entity3 = place_entity_at(&mut test_env, 1., 0.);
+        let entity4 = place_entity_at(&mut test_env, 0., 1.);
+        let entity5 = place_entity_at(&mut test_env, 10., 10.); // Not it's neighbour
+
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity1));
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity2));
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity3));
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity4));
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity5));
+
+        positioned_entities.clear();
+
+        let neighbour_entities =
+            positioned_entities.get_neighbours_of_position(center_entity_grid_pos);
+
+        assert_eq!(0, neighbour_entities.len());
+    }
+
+    fn get_entity_ref(test_env: &TestEnv, entity: Entity) -> EntityRef {
+        test_env.game.get_world_ref().entity(entity)
+    }
+
+    fn place_entity_at(test_env: &mut TestEnv, x: f64, y: f64) -> Entity {
+        test_env
             .game
             .get_world_mut()
             .spawn()
             .insert(Position { x, y })
-            .id();
-        positioned_entities.put(&test_env.game.get_world_ref().entity(entity));
-        entity
+            .id()
     }
 }
