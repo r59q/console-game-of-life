@@ -475,4 +475,5 @@ fn can_see_positioned_entities() {
 
     assert!(positioned_entity_some.is_some());
     assert!(positioned_entity_none.is_none());
+    assert_eq!(1, neighbours_of_none.len());
 }
