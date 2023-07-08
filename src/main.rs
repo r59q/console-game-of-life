@@ -1,23 +1,25 @@
 use bevy_ecs::prelude::SystemStage;
 use console_engine::KeyCode;
 use console_engine::MouseButton::{Left, Right};
+use systems::positioned_entities_updater::positioned_entities_updater;
 
+use crate::input_manager::axis::Axis::{Horizontal, Vertical};
+use crate::input_manager::buttons::Button::{Buy, Fire1, Fire2, Pause, Place};
+use crate::input_manager::input_types::InputType::{Key, Mouse};
+use crate::prefabs::Prefabs;
 use game::Game;
 use resources::inputs::axis_inputs::AxisInputs;
+use resources::inputs::button_inputs::ButtonInputs;
 use resources::inputs::input_bindings::InputBindings;
+use resources::inputs::mouse_inputs::MouseInputs;
 use resources::pause_state::PauseState;
+use resources::positioned_entities::PositionedEntities;
 use resources::view_offset::ViewOffset;
 use systems::drag_view_offset::drag_view_offset;
 use systems::pause_toggle::pause_toggle;
 use systems::place_under_mouse::place_under_mouse;
 use systems::reset_axis_input::reset_axial_inputs;
 use systems::spawn_placeables::spawn_placeables;
-use crate::input_manager::axis::Axis::{Horizontal, Vertical};
-use crate::input_manager::buttons::Button::{Buy, Fire1, Fire2, Pause, Place};
-use crate::input_manager::input_types::InputType::{Key, Mouse};
-use resources::inputs::button_inputs::ButtonInputs;
-use resources::inputs::mouse_inputs::MouseInputs;
-use crate::prefabs::Prefabs;
 
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
@@ -28,12 +30,12 @@ use crate::systems::movement::movement_system;
 use crate::systems::reset_mouse_input::reset_mouse_inputs;
 use crate::systems::timing::timing_system;
 
-mod game;
 mod components;
-mod systems;
-mod resources;
+mod game;
 mod input_manager;
 mod prefabs;
+mod resources;
+mod systems;
 
 fn main() {
     let mut game: Game = Game::new(3, 3, 30);
@@ -62,6 +64,8 @@ fn add_resources(game: &mut Game) {
     game.get_world_mut().insert_resource(AxisInputs::new());
     game.get_world_mut().insert_resource(MouseInputs::new());
     game.get_world_mut().insert_resource(ButtonInputs::new());
+    game.get_world_mut()
+        .insert_resource(PositionedEntities::new());
 }
 
 fn bind_keys() -> InputBindings {
@@ -72,40 +76,36 @@ fn bind_keys() -> InputBindings {
     bindings.bind_to_button(Pause, Key(KeyCode::Char('p')));
     bindings.bind_to_button(Place, Key(KeyCode::Char('q')));
 
-    bindings.bind_to_axis(
-        Horizontal,
-        Key(KeyCode::Char('d')),
-        Key(KeyCode::Char('a')),
-    );
-    bindings.bind_to_axis(
-        Vertical,
-        Key(KeyCode::Char('s')),
-        Key(KeyCode::Char('w')),
-    );
+    bindings.bind_to_axis(Horizontal, Key(KeyCode::Char('d')), Key(KeyCode::Char('a')));
+    bindings.bind_to_axis(Vertical, Key(KeyCode::Char('s')), Key(KeyCode::Char('w')));
 
     bindings
 }
 
 fn stage_systems(game: &mut Game) {
-    game.add_stage_to_schedule("timing", SystemStage::parallel()
-        .with_system(timing_system),
+    game.add_stage_to_schedule("timing", SystemStage::parallel().with_system(timing_system));
+    game.add_stage_to_schedule(
+        "update",
+        SystemStage::parallel()
+            .with_system(movement_system)
+            .with_system(axis_position_transform)
+            .with_system(character_renderer_reset)
+            .with_system(pause_toggle)
+            .with_system(place_under_mouse)
+            .with_system(spawn_placeables)
+            .with_system(positioned_entities_updater)
+            .with_system(drag_view_offset)
+            .with_system(debugger),
     );
-    game.add_stage_to_schedule("update", SystemStage::parallel()
-        .with_system(movement_system)
-        .with_system(axis_position_transform)
-        .with_system(character_renderer_reset)
-        .with_system(pause_toggle)
-        .with_system(place_under_mouse)
-        .with_system(spawn_placeables)
-        .with_system(drag_view_offset)
-        .with_system(debugger),
+    game.add_stage_to_schedule(
+        "pre-render",
+        SystemStage::single_threaded().with_system(character_renderer),
     );
-    game.add_stage_to_schedule("pre-render", SystemStage::single_threaded()
-        .with_system(character_renderer),
-    );
-    game.add_stage_to_schedule("post-render", SystemStage::single_threaded()
-        .with_system(reset_axial_inputs)
-        .with_system(reset_mouse_inputs),
+    game.add_stage_to_schedule(
+        "post-render",
+        SystemStage::single_threaded()
+            .with_system(reset_axial_inputs)
+            .with_system(reset_mouse_inputs),
     );
 }
 
