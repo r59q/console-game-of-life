@@ -1,9 +1,9 @@
 pub struct PauseState {
-    paused: bool
+    paused: bool,
 }
 impl PauseState {
     pub(crate) fn new() -> PauseState {
-        return PauseState { paused: false  }
+        return PauseState { paused: false };
     }
 
     pub(crate) fn is_paused(&self) -> bool {
@@ -22,7 +22,6 @@ impl PauseState {
 #[cfg(test)]
 mod test {
     use super::PauseState;
-
 
     #[test]
     fn can_create_new_pause_state() {
@@ -55,11 +54,11 @@ mod test {
     #[test]
     fn can_pause_and_unpause() {
         let mut pause_state = PauseState::new();
-        
+
         pause_state.pause();
         let is_paused = pause_state.is_paused();
         assert_eq!(is_paused, true);
-        
+
         pause_state.unpause();
         let is_paused = pause_state.is_paused();
         assert_eq!(is_paused, false);

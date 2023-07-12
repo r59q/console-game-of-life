@@ -54,6 +54,14 @@ impl PositionedEntities {
     pub fn clear(&mut self) -> () {
         self.entities.clear();
     }
+
+    pub fn get_all_entities(&self) -> Vec<(&(i32, i32), &Entity)> {
+        let mut result = Vec::new();
+        for (key, val) in &self.entities {
+            result.push((key, val));
+        }
+        result
+    }
 }
 
 #[cfg(test)]
@@ -170,6 +178,29 @@ mod test {
             positioned_entities.get_neighbours_of_position(center_entity_grid_pos);
 
         assert_eq!(0, neighbour_entities.len());
+    }
+
+    #[test]
+    fn can_get_all_entities() {
+        let mut positioned_entities = PositionedEntities::new();
+        let mut test_env = initialize();
+
+        let center_entity_grid_pos = (0, 0);
+        let entity1 = place_entity_at(
+            &mut test_env,
+            center_entity_grid_pos.0 as f64,
+            center_entity_grid_pos.1 as f64,
+        );
+        let entity2 = place_entity_at(&mut test_env, 0., 1.);
+        let entity3 = place_entity_at(&mut test_env, 10., 10.); // Not it's neighbour
+
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity1));
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity2));
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity3));
+
+        let entities = positioned_entities.get_all_entities();
+
+        assert_eq!(3, entities.len());
     }
 
     fn get_entity_ref(test_env: &TestEnv, entity: Entity) -> EntityRef {
