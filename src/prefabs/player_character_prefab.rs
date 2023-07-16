@@ -11,7 +11,10 @@ impl Prefabs {
             .insert(Position { x: 1., y: 1. })
             .insert(Velocity { x: 0.0, y: 0.0 })
             .insert(Controllable {})
-            .insert(RenderingCharacter { character: '@' })
+            .insert(RenderingCharacter {
+                character: '@',
+                color: console_engine::Color::Cyan,
+            })
             .id()
     };
 }

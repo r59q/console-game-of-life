@@ -3,7 +3,7 @@ use std::borrow::BorrowMut;
 use bevy_ecs::prelude::{Entity, Schedule, Stage, SystemStage};
 use bevy_ecs::schedule::StageLabel;
 use bevy_ecs::world::{EntityMut, World};
-use console_engine::pixel::pxl;
+use console_engine::pixel::{self, pxl};
 use console_engine::{ConsoleEngine, KeyCode};
 
 use crate::input_manager::key_binding;
@@ -114,15 +114,20 @@ impl Game {
         let targets = render_targets.unwrap();
         let (x_offset, y_offset) = view_offset.unwrap().get_offset();
 
-        let cloned_targets = targets.get_cloned_targets();
+        let mut cloned_targets = targets.get_cloned_targets();
+        cloned_targets.reverse();
         for target in cloned_targets {
             let char = target.get_target_character();
+            let color = target.get_target_color();
             let pos = target.get_target_position();
             let mut int_pos = pos.to_position_int();
             int_pos.x = int_pos.x - x_offset;
             int_pos.y = int_pos.y - y_offset;
-            self.engine
-                .set_pxl(int_pos.x as i32, int_pos.y as i32, pxl(char))
+            self.engine.set_pxl(
+                int_pos.x as i32,
+                int_pos.y as i32,
+                pixel::pxl_fg(char, color),
+            )
         }
         self.engine.draw();
     }

@@ -13,14 +13,20 @@ impl Prefabs {
     pub const CELL: PrefabCommands = |mut base_entity: EntityCommands| {
         base_entity
             .insert(Position { x: 0., y: 0. })
-            .insert(RenderingCharacter { character: '#' })
+            .insert(RenderingCharacter {
+                character: '#',
+                color: console_engine::Color::Cyan,
+            })
             .id()
     };
 
     pub const CELL_WITHOUT_POSITION: fn(&mut EntityCommands) -> Entity =
         |base_entity: &mut EntityCommands| {
             base_entity
-                .insert(RenderingCharacter { character: '#' })
+                .insert(RenderingCharacter {
+                    character: '#',
+                    color: console_engine::Color::Cyan,
+                })
                 .id()
         };
 
@@ -31,7 +37,10 @@ impl Prefabs {
                 replacement: Some(Prefabs::CELL),
             })
             .insert(UIEntityFlag {})
-            .insert(RenderingCharacter { character: '#' })
+            .insert(RenderingCharacter {
+                character: '#',
+                color: console_engine::Color::Green,
+            })
             .id()
     };
 }

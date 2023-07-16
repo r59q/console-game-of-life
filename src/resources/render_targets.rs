@@ -1,21 +1,32 @@
-use crate::components::position::{Position};
+use console_engine::Color;
+
+use crate::components::position::Position;
 
 #[derive(Clone)]
 pub struct RenderTarget {
     position: Position,
     character: char,
+    color: Color,
 }
 
 impl RenderTarget {
-    pub fn new(position: Position, character: char) -> Self {
-        return Self {position, character}
+    pub fn new(position: Position, character: char, color: Color) -> Self {
+        return Self {
+            position,
+            character,
+            color,
+        };
     }
     pub fn get_target_character(&self) -> char {
-        return self.character;
+        self.character
     }
 
     pub fn get_target_position(&self) -> Position {
-        return self.position;
+        self.position
+    }
+
+    pub fn get_target_color(&self) -> Color {
+        self.color
     }
 }
 
@@ -27,7 +38,7 @@ pub struct RenderTargets {
 impl RenderTargets {
     pub fn new() -> Self {
         return RenderTargets {
-            targets: Vec::new()
+            targets: Vec::new(),
         };
     }
 
@@ -46,6 +57,8 @@ impl RenderTargets {
 
 #[cfg(test)]
 mod test {
+    use console_engine::Color;
+
     use crate::components::position::Position;
     use crate::resources::render_targets::{RenderTarget, RenderTargets};
 
@@ -54,7 +67,11 @@ mod test {
         let mut targets = RenderTargets::new();
         let position = Position { x: 0., y: 0. };
 
-        let new_target = RenderTarget {position, character: 't' };
+        let new_target = RenderTarget {
+            position,
+            character: 't',
+            color: Color::Blue,
+        };
 
         assert_eq!(targets.targets.len(), 0);
         targets.add(new_target);
@@ -66,7 +83,11 @@ mod test {
         let mut targets = RenderTargets::new();
         let position = Position { x: 0., y: 0. };
 
-        let new_target = RenderTarget {position, character: 't' };
+        let new_target = RenderTarget {
+            position,
+            character: 't',
+            color: Color::Blue,
+        };
 
         assert_eq!(targets.targets.len(), 0);
         targets.add(new_target);
@@ -78,24 +99,65 @@ mod test {
         let mut targets = RenderTargets::new();
         let position = Position { x: 1., y: 2. };
 
-        let new_target = RenderTarget {position, character: 't' };
+        let new_target = RenderTarget {
+            position,
+            character: 't',
+            color: Color::Blue,
+        };
 
         assert_eq!(targets.targets.len(), 0);
         targets.add(new_target);
-        assert_eq!(targets.get_cloned_targets().get(0).unwrap().get_target_character(), 't');
-        assert_eq!(targets.get_cloned_targets().get(0).unwrap().get_target_position().x, 1.);
-        assert_eq!(targets.get_cloned_targets().get(0).unwrap().get_target_position().y, 2.);
+        assert_eq!(
+            targets
+                .get_cloned_targets()
+                .get(0)
+                .unwrap()
+                .get_target_character(),
+            't'
+        );
+        assert_eq!(
+            targets
+                .get_cloned_targets()
+                .get(0)
+                .unwrap()
+                .get_target_position()
+                .x,
+            1.
+        );
+        assert_eq!(
+            targets
+                .get_cloned_targets()
+                .get(0)
+                .unwrap()
+                .get_target_position()
+                .y,
+            2.
+        );
     }
 
     #[test]
     fn can_reset_targets() {
         let mut targets = RenderTargets::new();
         let position = Position { x: 0., y: 0. };
-        let new_target = RenderTarget {position, character: 't' };
+        let new_target = RenderTarget {
+            position,
+            character: 't',
+            color: Color::Blue,
+        };
 
         targets.add(new_target);
         assert_eq!(targets.targets.len(), 1);
         targets.reset();
         assert_eq!(targets.targets.len(), 0);
+    }
+
+    #[test]
+    fn can_get_render_color() {
+        let target = RenderTarget {
+            position: Position { x: 0., y: 0. },
+            character: 't',
+            color: Color::Green,
+        };
+        assert_eq!(Color::Green, target.get_target_color());
     }
 }
