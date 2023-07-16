@@ -3,6 +3,7 @@ use console_engine::KeyCode;
 use console_engine::MouseButton::{Left, Right};
 use systems::conways_rules::conways_rules;
 use systems::positioned_entities_updater::positioned_entities_updater;
+use systems::toggle_cell_on_click::toggle_cell_on_click;
 
 use crate::input_manager::axis::Axis::{Horizontal, Vertical};
 use crate::input_manager::buttons::Button::{Buy, Fire1, Fire2, Pause, Place};
@@ -42,7 +43,7 @@ fn main() {
     let mut game: Game = Game::new(3, 3, 30);
 
     // game.spawn_prefab(Prefabs::PLAYER_CHARACTER);
-    game.spawn_prefab(Prefabs::PLACEABLE_CELL);
+    // game.spawn_prefab(Prefabs::PLACEABLE_CELL);
 
     add_resources(&mut game);
 
@@ -96,7 +97,8 @@ fn stage_systems(game: &mut Game) {
             .with_system(spawn_placeables)
             .with_system(positioned_entities_updater)
             .with_system(drag_view_offset)
-            .with_system(debugger),
+            //.with_system(debugger)
+            .with_system(toggle_cell_on_click),
     );
     game.add_stage_to_schedule(
         "post-update",

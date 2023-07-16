@@ -9,7 +9,6 @@ pub fn character_renderer(
 ) {
     for (pos, char) in &query {
         let position = pos.clone();
-        let character = char.character;
         render_targets.add(RenderTarget::new(position, char.character, char.color));
     }
 }

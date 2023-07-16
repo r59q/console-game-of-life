@@ -12,3 +12,4 @@ pub mod reset_axis_input;
 pub mod reset_mouse_input;
 pub mod spawn_placeables;
 pub mod timing;
+pub mod toggle_cell_on_click;

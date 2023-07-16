@@ -1,53 +1,55 @@
-use console_engine::{ConsoleEngine, MouseButton};
 use crate::game::Game;
+use crate::input_manager::axis::Axis;
 use crate::input_manager::buttons::Button;
 use crate::input_manager::input_action::InputAction;
-use crate::resources::inputs::input_bindings::InputBindings;
-use strum::IntoEnumIterator;
-use crate::input_manager::axis::Axis;
 use crate::input_manager::input_action::InputAction::{Down, Held, Up};
 use crate::input_manager::input_types::InputType;
 use crate::resources::inputs::axis_inputs::AxisInputs;
 use crate::resources::inputs::button_inputs::ButtonInputs;
+use crate::resources::inputs::input_bindings::InputBindings;
 use crate::resources::inputs::mouse_inputs::MouseInputs;
+use console_engine::{ConsoleEngine, MouseButton};
+use strum::IntoEnumIterator;
 
 fn handle_input(input: InputType, engine: &ConsoleEngine) -> InputAction {
     return match input {
         InputType::Key(key_code) => {
             if engine.is_key_pressed(key_code) {
-                return Down
+                return Down;
             }
             if engine.is_key_held(key_code) {
-                return Held
+                return Held;
             }
             if engine.is_key_released(key_code) {
-                return Up
+                return Up;
             }
-            return InputAction::None
+            return InputAction::None;
         }
         InputType::Mouse(mouse_button) => {
             if let Some((_, _)) = engine.get_mouse_press(mouse_button) {
-                return Down
+                return Down;
             }
             if let Some((_, _)) = engine.get_mouse_released(mouse_button) {
-                return Up
+                return Up;
             }
             if let Some((_, _)) = engine.get_mouse_held(mouse_button) {
-                return Held
+                return Held;
             }
             InputAction::None
         }
-    }
+    };
 }
 
 pub fn capture_axial_inputs(game: &mut Game) {
     for axis in Axis::iter() {
-        let axis_binding_opt
-            = game.get_world_ref().get_resource::<InputBindings>().unwrap()
+        let axis_binding_opt = game
+            .get_world_ref()
+            .get_resource::<InputBindings>()
+            .unwrap()
             .get_axial_bindings(axis);
 
         if let Some(axial_binding) = axis_binding_opt {
-            let axial_binding= axial_binding.clone();
+            let axial_binding = axial_binding.clone();
             for binding in axial_binding {
                 let engine = game.get_engine();
                 let action_positive = handle_input(binding.positive, engine);
@@ -55,32 +57,37 @@ pub fn capture_axial_inputs(game: &mut Game) {
                 let pos_val = match action_positive {
                     Down => 1.,
                     Held => 1.,
-                    _ => 0.
+                    _ => 0.,
                 };
                 let neg_val = match action_negative {
                     Down => 1.,
                     Held => 1.,
-                    _ => 0.
+                    _ => 0.,
                 };
-                game.get_world_mut().get_resource_mut::<AxisInputs>().unwrap()
+                game.get_world_mut()
+                    .get_resource_mut::<AxisInputs>()
+                    .unwrap()
                     .set(axis, -neg_val + pos_val);
-
             }
         }
     }
 }
 pub fn capture_button_inputs(game: &mut Game) {
-
     for button in Button::iter() {
-        let button_binding_opt
-            = game.get_world_ref().get_resource::<InputBindings>().unwrap()
+        let button_binding_opt = game
+            .get_world_ref()
+            .get_resource::<InputBindings>()
+            .unwrap()
             .get_button_bindings(button);
         if let Some(button_binding) = button_binding_opt {
-            let button_binding= button_binding.clone();
+            let button_binding = button_binding.clone();
             for binding in button_binding {
                 let engine = game.get_engine();
                 let action = handle_input(binding.button_input, engine);
-                game.get_world_mut().get_resource_mut::<ButtonInputs>().unwrap().set_btn(button, action);
+                game.get_world_mut()
+                    .get_resource_mut::<ButtonInputs>()
+                    .unwrap()
+                    .set_btn(button, action);
             }
         }
     }
@@ -100,7 +107,10 @@ pub fn capture_mouse_inputs(game: &mut Game) {
     let m_middle_held = engine.get_mouse_held(MouseButton::Middle);
     let m_middle_released = engine.get_mouse_released(MouseButton::Middle);
 
-    let mut mouse_inputs = game.get_world_mut().get_resource_mut::<MouseInputs>().unwrap();
+    let mut mouse_inputs = game
+        .get_world_mut()
+        .get_resource_mut::<MouseInputs>()
+        .unwrap();
 
     // Left button inputs
     if let Some((x, y)) = m_left_press {
@@ -138,50 +148,50 @@ pub fn capture_mouse_inputs(game: &mut Game) {
 
 /*for button in Button::iter() {
 
-        let button_binding_opt
-            = game.get_world_ref().get_resource::<Bindings>().unwrap()
-            .get_button_bindings(button);
-        if let None = button_binding_opt {
-            panic!("No button binding available")
-        }
+    let button_binding_opt
+        = game.get_world_ref().get_resource::<Bindings>().unwrap()
+        .get_button_bindings(button);
+    if let None = button_binding_opt {
+        panic!("No button binding available")
+    }
 
-        let button_inputs_opt = game.get_world_mut().get_resource_mut::<ButtonInputs>();
-        if let None = button_inputs_opt {
-            panic!("No button inputs available")
-        }
+    let button_inputs_opt = game.get_world_mut().get_resource_mut::<ButtonInputs>();
+    if let None = button_inputs_opt {
+        panic!("No button inputs available")
+    }
 
-        for binding in game.get_world_ref().get_resource::<Bindings>().unwrap()
-            .get_button_bindings(button).unwrap() {
-            let input_type = binding.button_input;
-            match input_type {
-                InputType::Key(key_code) => {
-                    if game.get_engine().is_key_pressed(key_code) {
-                        let mut button_inputs = game.get_world_mut().get_resource_mut::<ButtonInputs>().unwrap();
-                        button_inputs.set_btn(button, Down)
-                    }
-                    if game.get_engine().is_key_held(key_code) {
-                        let mut button_inputs = game.get_world_mut().get_resource_mut::<ButtonInputs>().unwrap();
-                        button_inputs.set_btn(button, Held)
-                    }
-                    if game.get_engine().is_key_released(key_code) {
-                        let mut button_inputs = game.get_world_mut().get_resource_mut::<ButtonInputs>().unwrap();
-                        button_inputs.set_btn(button, Up)
-                    }
+    for binding in game.get_world_ref().get_resource::<Bindings>().unwrap()
+        .get_button_bindings(button).unwrap() {
+        let input_type = binding.button_input;
+        match input_type {
+            InputType::Key(key_code) => {
+                if game.get_engine().is_key_pressed(key_code) {
+                    let mut button_inputs = game.get_world_mut().get_resource_mut::<ButtonInputs>().unwrap();
+                    button_inputs.set_btn(button, Down)
                 }
-                InputType::Mouse(mouse_button) => {
-                    if let Some((x,y)) = game.get_engine().get_mouse_held(mouse_button) {
-                        let mut button_inputs = game.get_world_mut().get_resource_mut::<ButtonInputs>().unwrap();
-                        button_inputs.set_btn(button, Down)
-                    }
-                    if let Some((x,y)) = game.get_engine().get_mouse_released(mouse_button) {
-                        let mut button_inputs = game.get_world_mut().get_resource_mut::<ButtonInputs>().unwrap();
-                        button_inputs.set_btn(button, Up)
-                    }
-                    if let Some((x,y)) = game.get_engine().get_mouse_held(mouse_button) {
-                        let mut button_inputs = game.get_world_mut().get_resource_mut::<ButtonInputs>().unwrap();
-                        button_inputs.set_btn(button, Held)
-                    }
+                if game.get_engine().is_key_held(key_code) {
+                    let mut button_inputs = game.get_world_mut().get_resource_mut::<ButtonInputs>().unwrap();
+                    button_inputs.set_btn(button, Held)
+                }
+                if game.get_engine().is_key_released(key_code) {
+                    let mut button_inputs = game.get_world_mut().get_resource_mut::<ButtonInputs>().unwrap();
+                    button_inputs.set_btn(button, Up)
+                }
+            }
+            InputType::Mouse(mouse_button) => {
+                if let Some((x,y)) = game.get_engine().get_mouse_held(mouse_button) {
+                    let mut button_inputs = game.get_world_mut().get_resource_mut::<ButtonInputs>().unwrap();
+                    button_inputs.set_btn(button, Down)
+                }
+                if let Some((x,y)) = game.get_engine().get_mouse_released(mouse_button) {
+                    let mut button_inputs = game.get_world_mut().get_resource_mut::<ButtonInputs>().unwrap();
+                    button_inputs.set_btn(button, Up)
+                }
+                if let Some((x,y)) = game.get_engine().get_mouse_held(mouse_button) {
+                    let mut button_inputs = game.get_world_mut().get_resource_mut::<ButtonInputs>().unwrap();
+                    button_inputs.set_btn(button, Held)
                 }
             }
         }
-    }*/
+    }
+}*/
