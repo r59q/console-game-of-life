@@ -102,22 +102,22 @@ fn cell_dies_if_greater_than_3_neighbours_are_present() {
         .game
         .get_world_mut()
         .spawn()
-        .insert(Position { x: 1., y: 0. });
-    test_env
-        .game
-        .get_world_mut()
-        .spawn()
-        .insert(Position { x: 0., y: 1. });
-    test_env
-        .game
-        .get_world_mut()
-        .spawn()
         .insert(Position { x: 1., y: 1. });
     test_env
         .game
         .get_world_mut()
         .spawn()
-        .insert(Position { x: 0., y: -1. });
+        .insert(Position { x: 1., y: -1. });
+    test_env
+        .game
+        .get_world_mut()
+        .spawn()
+        .insert(Position { x: -1., y: 1. });
+    test_env
+        .game
+        .get_world_mut()
+        .spawn()
+        .insert(Position { x: -1., y: -1. });
 
     test_env.game.run_schedule();
     test_env.game.run_schedule();
@@ -129,6 +129,39 @@ fn cell_dies_if_greater_than_3_neighbours_are_present() {
         .unwrap();
 
     assert!(positioned_entities.get(&(0, 0)).is_none());
+}
+
+#[test]
+fn cell_should_spawn_if_exactly_three_neighbours() {
+    let mut test_env = initialize_with_conway();
+    test_env
+        .game
+        .get_world_mut()
+        .spawn()
+        .insert(Position { x: 0., y: 0. });
+
+    test_env
+        .game
+        .get_world_mut()
+        .spawn()
+        .insert(Position { x: 0., y: 1. });
+
+    test_env
+        .game
+        .get_world_mut()
+        .spawn()
+        .insert(Position { x: 1., y: 0. });
+
+    test_env.game.run_schedule();
+    test_env.game.run_schedule();
+
+    let positioned_entities = test_env
+        .game
+        .get_world_ref()
+        .get_resource::<PositionedEntities>()
+        .unwrap();
+
+    assert!(positioned_entities.get(&(1, 1)).is_some());
 }
 
 fn initialize_with_conway() -> TestEnv {
