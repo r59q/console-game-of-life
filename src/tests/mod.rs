@@ -84,7 +84,10 @@ pub fn initialize_with_rendered_entity_and_timing_system() -> TestEnv {
         .get_world_mut()
         .spawn()
         .insert(Position { x: 0., y: 0. })
-        .insert(RenderingCharacter { character: 't' })
+        .insert(RenderingCharacter {
+            character: 't',
+            color: console_engine::Color::Cyan,
+        })
         .id();
     return TestEnv { game, entity };
 }
