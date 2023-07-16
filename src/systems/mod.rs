@@ -1,6 +1,7 @@
 pub mod axis_position_transform;
 pub mod axis_velocity;
 pub mod character_renderer;
+pub mod conways_rules;
 pub mod debugger;
 pub mod drag_view_offset;
 pub mod movement;

@@ -1,6 +1,7 @@
 use bevy_ecs::prelude::SystemStage;
 use console_engine::KeyCode;
 use console_engine::MouseButton::{Left, Right};
+use systems::conways_rules::conways_rules;
 use systems::positioned_entities_updater::positioned_entities_updater;
 
 use crate::input_manager::axis::Axis::{Horizontal, Vertical};
@@ -40,7 +41,7 @@ mod systems;
 fn main() {
     let mut game: Game = Game::new(3, 3, 30);
 
-    game.spawn_prefab(Prefabs::PLAYER_CHARACTER);
+    // game.spawn_prefab(Prefabs::PLAYER_CHARACTER);
     game.spawn_prefab(Prefabs::PLACEABLE_CELL);
 
     add_resources(&mut game);
@@ -96,6 +97,10 @@ fn stage_systems(game: &mut Game) {
             .with_system(positioned_entities_updater)
             .with_system(drag_view_offset)
             .with_system(debugger),
+    );
+    game.add_stage_to_schedule(
+        "post-update",
+        SystemStage::single_threaded().with_system(conways_rules),
     );
     game.add_stage_to_schedule(
         "pre-render",
