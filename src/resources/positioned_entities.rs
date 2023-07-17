@@ -62,6 +62,10 @@ impl PositionedEntities {
         }
         result
     }
+
+    pub fn remove_entity(&mut self, position: (i32, i32)) -> () {
+        self.entities.remove(&position);
+    }
 }
 
 #[cfg(test)]
@@ -201,6 +205,29 @@ mod test {
         let entities = positioned_entities.get_all_entities();
 
         assert_eq!(3, entities.len());
+    }
+
+    #[test]
+    fn can_remove_single_entity() {
+        let mut positioned_entities = PositionedEntities::new();
+        let mut test_env = initialize();
+
+        let center_entity_grid_pos = (0, 0);
+        let entity1 = place_entity_at(
+            &mut test_env,
+            center_entity_grid_pos.0 as f64,
+            center_entity_grid_pos.1 as f64,
+        );
+        let entity2 = place_entity_at(&mut test_env, 0., 1.);
+        let entity3 = place_entity_at(&mut test_env, 10., 10.); // Not it's neighbour
+
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity1));
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity2));
+        positioned_entities.put_entity_ref(&get_entity_ref(&test_env, entity3));
+        positioned_entities.remove_entity((0, 0));
+        let entities = positioned_entities.get_all_entities();
+
+        assert_eq!(2, entities.len());
     }
 
     fn get_entity_ref(test_env: &TestEnv, entity: Entity) -> EntityRef {
