@@ -1,6 +1,7 @@
 use bevy_ecs::prelude::SystemStage;
 use console_engine::KeyCode;
 use console_engine::MouseButton::{Left, Right};
+use resources::ui::ui_layer::UILayer;
 use systems::conways_rules::conways_rules;
 use systems::positioned_entities_updater::positioned_entities_updater;
 use systems::toggle_cell_on_click::toggle_cell_on_click;
@@ -64,6 +65,7 @@ fn add_resources(game: &mut Game) {
     game.get_world_mut().insert_resource(bindings);
 
     game.get_world_mut().insert_resource(AxisInputs::new());
+    game.get_world_mut().insert_resource(UILayer::new());
     game.get_world_mut().insert_resource(MouseInputs::new());
     game.get_world_mut().insert_resource(ButtonInputs::new());
     game.get_world_mut()
