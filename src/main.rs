@@ -105,7 +105,7 @@ fn stage_systems(game: &mut Game) {
         SystemStage::single_threaded().with_system(conways_rules),
     );
     game.add_stage_to_schedule(
-        "pre-render",
+        "render",
         SystemStage::single_threaded().with_system(character_renderer),
     );
     game.add_stage_to_schedule(

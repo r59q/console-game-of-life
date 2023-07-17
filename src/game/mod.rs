@@ -6,7 +6,7 @@ use bevy_ecs::world::{EntityMut, World};
 use console_engine::pixel::{self, pxl};
 use console_engine::{ConsoleEngine, KeyCode};
 
-use crate::input_manager::key_binding;
+use crate::input_manager::key_binding::{self, capture_inputs};
 use crate::prefabs::Prefab;
 use crate::resources::inputs::input_bindings::InputBindings;
 use crate::resources::render_targets::RenderTargets;
@@ -91,13 +91,18 @@ impl Game {
 
     fn game_logic(&mut self) {
         let bindings_opt = self.get_world_ref().get_resource::<InputBindings>();
-        if let None = bindings_opt {
+        if bindings_opt.is_none() {
             panic!("There are no bindings")
         }
+        // Captures inputs from engine, such that bevy ecs can use it
+        self.capture_inputs();
+        self.run_schedule();
+    }
+
+    fn capture_inputs(&mut self) {
         key_binding::capture_inputs::capture_mouse_inputs(self);
         key_binding::capture_inputs::capture_button_inputs(self);
         key_binding::capture_inputs::capture_axial_inputs(self);
-        self.run_schedule();
     }
 
     fn game_render(&mut self) {
