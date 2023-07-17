@@ -100,7 +100,6 @@ impl Game {
         self.run_schedule();
     }
 
-    // todo: have step for forcing dependencies such as ViewOffset and RenderTargets
     fn game_render(&mut self) {
         let view_offset = self.get_world_ref().get_resource::<ViewOffset>();
         let render_targets = self.get_world_ref().get_resource::<RenderTargets>();
