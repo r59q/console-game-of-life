@@ -6,5 +6,9 @@ pub enum Button {
     Fire2,
     Buy,
     Place,
-    Pause
+    Pause,
+    Increase,
+    Decrease,
+    Help,
+    Random,
 }

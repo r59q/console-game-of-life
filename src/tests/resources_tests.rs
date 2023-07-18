@@ -477,3 +477,37 @@ fn can_see_positioned_entities() {
     assert!(positioned_entity_none.is_none());
     assert_eq!(1, neighbours_of_none.len());
 }
+
+#[test]
+fn can_toggle_help_menu_state() {
+    let mut test_env = initialize();
+
+    test_env
+        .game
+        .get_world_mut()
+        .insert_resource(HelpMenuState::new());
+
+    test_env
+        .game
+        .get_world_mut()
+        .insert_resource(UILayer::new());
+
+    test_env.game.add_stage_to_schedule(
+        "stage_label",
+        SystemStage::parallel().with_system(help_menu_toggeling),
+    );
+
+    let mut button_inputs = ButtonInputs::new();
+    button_inputs.set_btn(Button::Help, InputAction::Down);
+    test_env.game.get_world_mut().insert_resource(button_inputs);
+
+    test_env.game.run_schedule();
+
+    let help_menu_state = test_env
+        .game
+        .get_world_ref()
+        .get_resource::<HelpMenuState>()
+        .unwrap();
+
+    assert!(!help_menu_state.is_visible())
+}
