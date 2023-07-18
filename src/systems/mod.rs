@@ -13,3 +13,4 @@ pub mod reset_mouse_input;
 pub mod spawn_placeables;
 pub mod timing;
 pub mod toggle_cell_on_click;
+pub mod toggle_help_menu;

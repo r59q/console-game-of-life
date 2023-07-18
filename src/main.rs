@@ -1,13 +1,18 @@
 use bevy_ecs::prelude::SystemStage;
 use console_engine::MouseButton::{Left, Right};
 use console_engine::{Color, KeyCode};
+use resources::ui::help_menu_state::HelpMenuState;
+use resources::ui::tutorial_preset::insert_tutorial_text;
 use resources::ui::ui_layer::UILayer;
 use systems::conways_rules::conways_rules;
 use systems::positioned_entities_updater::positioned_entities_updater;
 use systems::toggle_cell_on_click::toggle_cell_on_click;
+use systems::toggle_help_menu::help_menu_toggeling;
 
 use crate::input_manager::axis::Axis::{Horizontal, Vertical};
-use crate::input_manager::buttons::Button::{Buy, Fire1, Fire2, Pause, Place};
+use crate::input_manager::buttons::Button::{
+    Buy, Decrease, Fire1, Fire2, Help, Increase, Pause, Place, Random,
+};
 use crate::input_manager::input_types::InputType::{Key, Mouse};
 use crate::prefabs::Prefabs;
 use game::Game;
@@ -41,7 +46,7 @@ mod resources;
 mod systems;
 
 fn main() {
-    let mut game: Game = Game::new(3, 3, 30);
+    let mut game: Game = Game::new(3, 3, 60);
 
     // game.spawn_prefab(Prefabs::PLAYER_CHARACTER);
     // game.spawn_prefab(Prefabs::PLACEABLE_CELL);
@@ -54,16 +59,15 @@ fn main() {
 }
 
 fn add_resources(game: &mut Game) {
+    let view_offset = ViewOffset::new();
+    let bindings = bind_keys();
+
     game.get_world_mut().insert_resource(Timer::new());
     game.get_world_mut().insert_resource(RenderTargets::new());
     game.get_world_mut().insert_resource(PauseState::new());
-    let mut view_offset = ViewOffset::new();
-    view_offset.set_offset(0, 0);
     game.get_world_mut().insert_resource(view_offset);
-
-    let bindings = bind_keys();
     game.get_world_mut().insert_resource(bindings);
-
+    game.get_world_mut().insert_resource(HelpMenuState::new());
     game.get_world_mut().insert_resource(AxisInputs::new());
     game.get_world_mut().insert_resource(create_ui_layer());
     game.get_world_mut().insert_resource(MouseInputs::new());
@@ -79,6 +83,10 @@ fn bind_keys() -> InputBindings {
     bindings.bind_to_button(Buy, Key(KeyCode::Char('b')));
     bindings.bind_to_button(Pause, Key(KeyCode::Char('p')));
     bindings.bind_to_button(Place, Key(KeyCode::Char('q')));
+    bindings.bind_to_button(Random, Key(KeyCode::Char('r')));
+    bindings.bind_to_button(Decrease, Key(KeyCode::Char('z')));
+    bindings.bind_to_button(Increase, Key(KeyCode::Char('x')));
+    bindings.bind_to_button(Help, Key(KeyCode::Char('h')));
 
     bindings.bind_to_axis(Horizontal, Key(KeyCode::Char('d')), Key(KeyCode::Char('a')));
     bindings.bind_to_axis(Vertical, Key(KeyCode::Char('s')), Key(KeyCode::Char('w')));
@@ -98,6 +106,7 @@ fn stage_systems(game: &mut Game) {
             .with_system(place_under_mouse)
             .with_system(spawn_placeables)
             .with_system(positioned_entities_updater)
+            .with_system(help_menu_toggeling)
             .with_system(drag_view_offset)
             //.with_system(debugger)
             .with_system(toggle_cell_on_click),
@@ -120,58 +129,7 @@ fn stage_systems(game: &mut Game) {
 
 fn create_ui_layer() -> UILayer {
     let mut ui_layer = UILayer::new();
-    ui_layer.insert_text(
-        "*********************************************",
-        (1, 1),
-        Color::Yellow,
-    );
-    ui_layer.insert_text(
-        "*           Conway's Game of Life           *",
-        (1, 2),
-        Color::Yellow,
-    );
-    ui_layer.insert_text(
-        "*            --   Help menu   --            *",
-        (1, 3),
-        Color::Yellow,
-    );
-    ui_layer.insert_text(
-        "*                                           *",
-        (1, 4),
-        Color::Yellow,
-    );
-    ui_layer.insert_text(
-        "* ESC              - Closes program         *",
-        (1, 5),
-        Color::Yellow,
-    );
-    ui_layer.insert_text(
-        "* P                - Pause / Unpause        *",
-        (1, 6),
-        Color::Yellow,
-    );
-    ui_layer.insert_text(
-        "* Left click       - Place cell             *",
-        (1, 7),
-        Color::Yellow,
-    );
-    ui_layer.insert_text(
-        "* Right click+drag - Drags simulation space *",
-        (1, 8),
-        Color::Yellow,
-    );
-    ui_layer.insert_text(
-        "* H                - Toggle help menu       *",
-        (1, 9),
-        Color::Yellow,
-    );
-    ui_layer.set_pixel((3, 5), 'E', Color::Red);
-    ui_layer.set_pixel((4, 5), 'S', Color::Red);
-    ui_layer.set_pixel((5, 5), 'C', Color::Red);
-    ui_layer.set_pixel((3, 6), 'P', Color::Red);
-    ui_layer.insert_text("Left click", (3, 7), Color::Red);
-    ui_layer.insert_text("Right click+drag", (3, 8), Color::Red);
-    ui_layer.set_pixel((3, 9), 'H', Color::Red);
+    insert_tutorial_text(&mut ui_layer);
     ui_layer
 }
 
