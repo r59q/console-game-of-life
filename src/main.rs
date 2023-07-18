@@ -1,6 +1,6 @@
 use bevy_ecs::prelude::SystemStage;
-use console_engine::KeyCode;
 use console_engine::MouseButton::{Left, Right};
+use console_engine::{Color, KeyCode};
 use resources::ui::ui_layer::UILayer;
 use systems::conways_rules::conways_rules;
 use systems::positioned_entities_updater::positioned_entities_updater;
@@ -65,7 +65,7 @@ fn add_resources(game: &mut Game) {
     game.get_world_mut().insert_resource(bindings);
 
     game.get_world_mut().insert_resource(AxisInputs::new());
-    game.get_world_mut().insert_resource(UILayer::new());
+    game.get_world_mut().insert_resource(create_ui_layer());
     game.get_world_mut().insert_resource(MouseInputs::new());
     game.get_world_mut().insert_resource(ButtonInputs::new());
     game.get_world_mut()
@@ -116,6 +116,63 @@ fn stage_systems(game: &mut Game) {
             .with_system(reset_axial_inputs)
             .with_system(reset_mouse_inputs),
     );
+}
+
+fn create_ui_layer() -> UILayer {
+    let mut ui_layer = UILayer::new();
+    ui_layer.insert_text(
+        "*********************************************",
+        (1, 1),
+        Color::Yellow,
+    );
+    ui_layer.insert_text(
+        "*           Conway's Game of Life           *",
+        (1, 2),
+        Color::Yellow,
+    );
+    ui_layer.insert_text(
+        "*            --   Help menu   --            *",
+        (1, 3),
+        Color::Yellow,
+    );
+    ui_layer.insert_text(
+        "*                                           *",
+        (1, 4),
+        Color::Yellow,
+    );
+    ui_layer.insert_text(
+        "* ESC              - Closes program         *",
+        (1, 5),
+        Color::Yellow,
+    );
+    ui_layer.insert_text(
+        "* P                - Pause / Unpause        *",
+        (1, 6),
+        Color::Yellow,
+    );
+    ui_layer.insert_text(
+        "* Left click       - Place cell             *",
+        (1, 7),
+        Color::Yellow,
+    );
+    ui_layer.insert_text(
+        "* Right click+drag - Drags simulation space *",
+        (1, 8),
+        Color::Yellow,
+    );
+    ui_layer.insert_text(
+        "* H                - Toggle help menu       *",
+        (1, 9),
+        Color::Yellow,
+    );
+    ui_layer.set_pixel((3, 5), 'E', Color::Red);
+    ui_layer.set_pixel((4, 5), 'S', Color::Red);
+    ui_layer.set_pixel((5, 5), 'C', Color::Red);
+    ui_layer.set_pixel((3, 6), 'P', Color::Red);
+    ui_layer.insert_text("Left click", (3, 7), Color::Red);
+    ui_layer.insert_text("Right click+drag", (3, 8), Color::Red);
+    ui_layer.set_pixel((3, 9), 'H', Color::Red);
+    ui_layer
 }
 
 #[cfg(test)]
