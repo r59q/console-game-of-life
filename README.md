@@ -1,6 +1,10 @@
 # Conway's Game of Life
 *v0.1*
 
+<p align="center">
+  <img src="https://github.com/r59q/Conway-s-Game-of-Life-in-console/assets/6570193/7dece83c-74a1-487d-af4c-f63513b22dd0">
+</p>
+
 This is an iteration of the popular zero-player game 'Game of Life' by Conway.
 
 It is a small project written in the Rust programming language as a learning exercise. It is a simple console program, which uses ASCII art to draw the graphics.
