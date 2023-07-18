@@ -50,10 +50,9 @@ fn main() {
 
     let mut fps = 60;
     if args.len() > 1 {
-        match args[1].parse() {
-            Ok(num) => fps = num,
-            Err(_) => panic!("Wrong argument. Please only put a number to specify target fps"),
-        }
+        fps = args[1]
+            .parse()
+            .expect("Wrong argument. Please only put a number to specify target fps")
     }
 
     let mut game: Game = Game::new(3, 3, fps);
