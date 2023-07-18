@@ -1,4 +1,6 @@
 # Conway's Game of Life
+*v0.1*
+
 This is an iteration of the popular zero-player game 'Game of Life' by Conway.
 
 It is a small project written in the Rust programming language as a learning exercise. It is a simple console program, which uses ASCII art to draw the graphics.
