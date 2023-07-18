@@ -48,6 +48,7 @@ mod systems;
 fn main() {
     let args = std::env::args().collect::<Vec<String>>();
 
+    // Default fps is 60, check for overriding config from argument
     let mut fps = 60;
     if args.len() > 1 {
         fps = args[1]
