@@ -35,7 +35,6 @@ The game world is infinite, which means you can drag the simulation space by usi
 
 Use `R` to randomize a starting state.
 
-
 If the speed is too slow increase it using `X`. *Note*: It is limited by the framerate.
 
 You can decrease the simulation speed using `Z`.
