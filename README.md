@@ -1,5 +1,5 @@
 # Conway's Game of Life
-*v0.1*
+*v0.1* - Written in *Rust*
 
 <p align="center">
   <img src="https://github.com/r59q/Conway-s-Game-of-Life-in-console/assets/6570193/7dece83c-74a1-487d-af4c-f63513b22dd0">
