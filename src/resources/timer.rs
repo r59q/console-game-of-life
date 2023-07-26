@@ -9,12 +9,15 @@ pub struct Timer {
 impl Timer {
     pub fn new() -> Self {
         let sys_time = std::time::SystemTime::now();
-        return Timer { start_time: sys_time, now: sys_time, delta_time: Duration::from_micros(0) };
+        return Timer {
+            start_time: sys_time,
+            now: sys_time,
+            delta_time: Duration::from_micros(0),
+        };
     }
 
     pub fn update(&mut self) {
-        let duration_since_now
-            = SystemTime::duration_since(&SystemTime::now(), self.now);
+        let duration_since_now = SystemTime::duration_since(&SystemTime::now(), self.now);
 
         self.now = SystemTime::now();
 
@@ -22,7 +25,9 @@ impl Timer {
             Ok(duration) => {
                 self.delta_time = duration;
             }
-            Err(_) => { panic!("This really should not happen!") }
+            Err(_) => {
+                panic!("This really should not happen!")
+            }
         }
     }
 }
