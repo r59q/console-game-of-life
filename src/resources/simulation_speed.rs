@@ -1,5 +1,6 @@
 use std::cmp;
 
+/// Simulation speed is denoted in milliseconds between each cell update
 pub struct SimulationSpeed {
     speed: i32,
 }
@@ -14,10 +15,12 @@ impl SimulationSpeed {
         }
     }
 
+    /// Speed is given in milliseconds.
     pub fn get_speed(&self) -> i32 {
         return self.speed;
     }
 
+    /// Add a number of milliseconds in speed.
     pub fn add_speed(&mut self, change: i32) -> () {
         let new_value = cmp::max(MIN_SIM_SPEED, self.speed + change);
         self.speed = new_value;

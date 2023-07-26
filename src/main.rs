@@ -5,6 +5,7 @@ use resources::simulation_speed::SimulationSpeed;
 use resources::ui::help_menu_state::HelpMenuState;
 use resources::ui::tutorial_preset::insert_tutorial_text;
 use resources::ui::ui_layer::UILayer;
+use systems::cell_randomizer::cell_randomizer;
 use systems::conways_rules::conways_rules;
 use systems::positioned_entities_updater::positioned_entities_updater;
 use systems::simulation_speed_changer::simulation_speed_changer;
@@ -123,6 +124,7 @@ fn stage_systems(game: &mut Game) {
             .with_system(help_menu_toggeling)
             .with_system(drag_view_offset)
             .with_system(simulation_speed_changer)
+            .with_system(cell_randomizer)
             //.with_system(debugger)
             .with_system(toggle_cell_on_click),
     );

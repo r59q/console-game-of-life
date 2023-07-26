@@ -1,5 +1,6 @@
 pub mod axis_position_transform;
 pub mod axis_velocity;
+pub mod cell_randomizer;
 pub mod character_renderer;
 pub mod conways_rules;
 pub mod debugger;
@@ -15,3 +16,4 @@ pub mod spawn_placeables;
 pub mod timing;
 pub mod toggle_cell_on_click;
 pub mod toggle_help_menu;
+pub mod utils;
