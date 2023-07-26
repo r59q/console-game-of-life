@@ -10,6 +10,7 @@ pub mod place_under_mouse;
 pub mod positioned_entities_updater;
 pub mod reset_axis_input;
 pub mod reset_mouse_input;
+pub mod simulation_speed_changer;
 pub mod spawn_placeables;
 pub mod timing;
 pub mod toggle_cell_on_click;

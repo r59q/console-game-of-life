@@ -4,6 +4,9 @@ pub struct SimulationSpeed {
     speed: i32,
 }
 
+// We need a minimum simulation speed, since too low sim speed may result in unresponsiveness
+const MIN_SIM_SPEED: i32 = 25;
+
 impl SimulationSpeed {
     pub fn new(initial_speed: i32) -> SimulationSpeed {
         SimulationSpeed {
@@ -16,13 +19,15 @@ impl SimulationSpeed {
     }
 
     pub fn add_speed(&mut self, change: i32) -> () {
-        let new_value = cmp::max(0, self.speed + change);
+        let new_value = cmp::max(MIN_SIM_SPEED, self.speed + change);
         self.speed = new_value;
     }
 }
 
 #[cfg(test)]
 mod test {
+    use crate::resources::simulation_speed::MIN_SIM_SPEED;
+
     use super::SimulationSpeed;
 
     #[test]
@@ -59,6 +64,6 @@ mod test {
     fn cannot_change_speed_below_zero() {
         let mut sim_speed = SimulationSpeed::new(500);
         sim_speed.add_speed(-1000);
-        assert_eq!(0, sim_speed.get_speed());
+        assert_eq!(MIN_SIM_SPEED, sim_speed.get_speed());
     }
 }
