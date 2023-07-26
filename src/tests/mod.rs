@@ -8,6 +8,7 @@ use crate::systems::timing::timing_system;
 use super::*;
 
 mod axis_transform_position_system_tests;
+mod cell_randomizer_test;
 mod conways_rules_tests;
 mod ecs_integration_tests;
 mod game_tests;
