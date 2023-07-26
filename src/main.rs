@@ -1,11 +1,13 @@
 use bevy_ecs::prelude::SystemStage;
 use console_engine::MouseButton::{Left, Right};
 use console_engine::{Color, KeyCode};
+use resources::simulation_speed::SimulationSpeed;
 use resources::ui::help_menu_state::HelpMenuState;
 use resources::ui::tutorial_preset::insert_tutorial_text;
 use resources::ui::ui_layer::UILayer;
 use systems::conways_rules::conways_rules;
 use systems::positioned_entities_updater::positioned_entities_updater;
+use systems::simulation_speed_changer::simulation_speed_changer;
 use systems::toggle_cell_on_click::toggle_cell_on_click;
 use systems::toggle_help_menu::help_menu_toggeling;
 
@@ -83,6 +85,8 @@ fn add_resources(game: &mut Game) {
     game.get_world_mut().insert_resource(MouseInputs::new());
     game.get_world_mut().insert_resource(ButtonInputs::new());
     game.get_world_mut()
+        .insert_resource(SimulationSpeed::new(500));
+    game.get_world_mut()
         .insert_resource(PositionedEntities::new());
 }
 
@@ -118,6 +122,7 @@ fn stage_systems(game: &mut Game) {
             .with_system(positioned_entities_updater)
             .with_system(help_menu_toggeling)
             .with_system(drag_view_offset)
+            .with_system(simulation_speed_changer)
             //.with_system(debugger)
             .with_system(toggle_cell_on_click),
     );

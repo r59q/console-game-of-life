@@ -14,7 +14,7 @@ impl Prefabs {
         base_entity
             .insert(Position { x: 0., y: 0. })
             .insert(RenderingCharacter {
-                character: '#',
+                character: '■',
                 color: console_engine::Color::Cyan,
             })
             .id()
@@ -24,7 +24,7 @@ impl Prefabs {
         |base_entity: &mut EntityCommands| {
             base_entity
                 .insert(RenderingCharacter {
-                    character: '#',
+                    character: '■',
                     color: console_engine::Color::Cyan,
                 })
                 .id()

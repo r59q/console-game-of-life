@@ -1,4 +1,4 @@
-use bevy_ecs::system::{Commands, Res};
+use bevy_ecs::system::{Commands, Res, ResMut};
 
 use crate::{
     components::position::Position,
@@ -6,6 +6,8 @@ use crate::{
     resources::{
         pause_state::{self, PauseState},
         positioned_entities::PositionedEntities,
+        simulation_speed::SimulationSpeed,
+        timer::Timer,
     },
 };
 
@@ -25,8 +27,13 @@ pub fn conways_rules(
     mut commands: Commands,
     positioned_entities: Res<PositionedEntities>,
     pause_state: Res<PauseState>,
+    mut timer: ResMut<Timer>,
+    sim_speed: Res<SimulationSpeed>,
 ) {
     if pause_state.is_paused() {
+        return;
+    }
+    if timer.get_time_since_cell_updates().as_millis() < sim_speed.get_speed().try_into().unwrap() {
         return;
     }
 
@@ -60,4 +67,5 @@ pub fn conways_rules(
             }
         }
     }
+    timer.reset_cell_update_timer();
 }

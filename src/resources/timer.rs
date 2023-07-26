@@ -4,6 +4,7 @@ pub struct Timer {
     pub start_time: SystemTime,
     pub now: SystemTime,
     pub delta_time: Duration,
+    cell_update_time: SystemTime,
 }
 
 impl Timer {
@@ -13,6 +14,7 @@ impl Timer {
             start_time: sys_time,
             now: sys_time,
             delta_time: Duration::from_micros(0),
+            cell_update_time: sys_time,
         };
     }
 
@@ -29,6 +31,15 @@ impl Timer {
                 panic!("This really should not happen!")
             }
         }
+    }
+
+    pub fn get_time_since_cell_updates(&self) -> Duration {
+        SystemTime::duration_since(&SystemTime::now(), self.cell_update_time)
+            .expect("Failed to compute time since last cell update")
+    }
+
+    pub fn reset_cell_update_timer(&mut self) -> () {
+        self.cell_update_time = SystemTime::now();
     }
 }
 
@@ -61,5 +72,29 @@ mod test {
         timer.update();
 
         assert_ne!(timer.delta_time.as_micros(), second_test);
+    }
+
+    #[test]
+    fn can_get_time_since_last_cell_update() {
+        let timer = Timer::new();
+        let duration = timer.get_time_since_cell_updates();
+
+        assert_eq!(0, duration.as_millis())
+    }
+
+    #[test]
+    fn cell_update_timer_changes_with_time() {
+        let timer = Timer::new();
+        std::thread::sleep(Duration::from_millis(10));
+
+        assert_ne!(0, timer.get_time_since_cell_updates().as_millis())
+    }
+
+    #[test]
+    fn can_reset_cell_update_timer() {
+        let mut timer = Timer::new();
+        std::thread::sleep(Duration::from_millis(10));
+        timer.reset_cell_update_timer();
+        assert_eq!(0, timer.get_time_since_cell_updates().as_millis());
     }
 }

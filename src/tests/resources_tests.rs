@@ -82,20 +82,20 @@ fn timer_with_timing_system_contains_last_frame_delta() {
 
     let mut time = world_mut.get_resource::<Timer>();
 
-    let first_frame_delta = time.unwrap().delta_time.as_micros();
+    let first_frame_delta = time.unwrap().delta_time.as_nanos();
 
     schedule.run(world_mut);
     schedule.run(world_mut);
 
     time = world_mut.get_resource::<Timer>();
 
-    let second_frame_delta = time.unwrap().delta_time.as_micros();
+    let second_frame_delta = time.unwrap().delta_time.as_nanos();
 
     schedule.run(world_mut);
 
     time = world_mut.get_resource::<Timer>();
 
-    let third_frame_delta = time.unwrap().delta_time.as_micros();
+    let third_frame_delta = time.unwrap().delta_time.as_nanos();
 
     assert_eq!(first_frame_delta, 0);
     assert_ne!(second_frame_delta, 0);

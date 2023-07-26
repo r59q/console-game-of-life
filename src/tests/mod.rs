@@ -15,6 +15,7 @@ mod movement_system_tests;
 mod place_under_mouse_tests;
 mod rendering_tests;
 mod resources_tests;
+mod simulation_speed_changer_test;
 mod spawn_cell_on_click_test;
 mod spawn_placeable_entities_tests;
 
