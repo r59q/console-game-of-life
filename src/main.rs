@@ -1,6 +1,7 @@
 use bevy_ecs::prelude::SystemStage;
 use console_engine::MouseButton::{Left, Right};
 use console_engine::{Color, KeyCode};
+use resources::simulation_speed::SimulationSpeed;
 use resources::ui::help_menu_state::HelpMenuState;
 use resources::ui::tutorial_preset::insert_tutorial_text;
 use resources::ui::ui_layer::UILayer;
@@ -82,6 +83,8 @@ fn add_resources(game: &mut Game) {
     game.get_world_mut().insert_resource(create_ui_layer());
     game.get_world_mut().insert_resource(MouseInputs::new());
     game.get_world_mut().insert_resource(ButtonInputs::new());
+    game.get_world_mut()
+        .insert_resource(SimulationSpeed::new(500));
     game.get_world_mut()
         .insert_resource(PositionedEntities::new());
 }
