@@ -1,6 +1,5 @@
 use std::{
-    thread::Thread,
-    time::{Duration, SystemTime},
+    time::{Duration},
 };
 
 use bevy_ecs::schedule::SystemStage;
@@ -12,7 +11,7 @@ use crate::{
         simulation_speed::SimulationSpeed, timer::Timer,
     },
     systems::{
-        conways_rules::{self, conways_rules},
+        conways_rules::{conways_rules},
         positioned_entities_updater::positioned_entities_updater,
     },
     tests::initialize,

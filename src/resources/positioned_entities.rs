@@ -70,10 +70,9 @@ impl PositionedEntities {
 
 #[cfg(test)]
 mod test {
-    use std::borrow::{Borrow, BorrowMut};
+    
 
     use bevy_ecs::{
-        entity::EntityLocation,
         prelude::Entity,
         world::{EntityRef, World},
     };
@@ -81,7 +80,7 @@ mod test {
     use crate::{
         components::position::Position,
         game::Game,
-        prefabs::{PrefabCommands, Prefabs},
+        prefabs::{Prefabs},
         tests::TestEnv,
     };
 

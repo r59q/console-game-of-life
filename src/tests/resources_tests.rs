@@ -12,7 +12,7 @@ use crate::resources::inputs::axis_inputs::AxisInputs;
 use crate::resources::inputs::button_inputs::ButtonInputs;
 use crate::resources::inputs::input_bindings::InputBindings;
 use crate::resources::inputs::mouse_inputs::MouseInputs;
-use crate::resources::positioned_entities;
+
 use crate::resources::positioned_entities::PositionedEntities;
 use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
@@ -288,7 +288,7 @@ fn system_can_reset_mouse_inputs() {
 
     test_env.game.run_schedule();
 
-    let mut hopefully_reset_state = test_env
+    let hopefully_reset_state = test_env
         .game
         .get_world_mut()
         .get_resource_mut::<MouseInputs>()

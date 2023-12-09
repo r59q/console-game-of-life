@@ -1,16 +1,16 @@
-use std::borrow::BorrowMut;
+
 
 use bevy_ecs::prelude::{Entity, Schedule, Stage, SystemStage};
 use bevy_ecs::schedule::StageLabel;
-use bevy_ecs::world::{EntityMut, World};
-use console_engine::pixel::{self, pxl};
+use bevy_ecs::world::{World};
+
 use console_engine::{ConsoleEngine, KeyCode};
 
-use crate::input_manager::key_binding::{self, capture_inputs};
+use crate::input_manager::key_binding::{self};
 use crate::prefabs::Prefab;
 use crate::resources::inputs::input_bindings::InputBindings;
-use crate::resources::render_targets::RenderTargets;
-use crate::resources::view_offset::ViewOffset;
+
+
 
 mod rendering;
 

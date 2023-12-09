@@ -1,7 +1,6 @@
 use bevy_ecs::schedule::SystemStage;
 
 use crate::{
-    components::position::Position,
     input_manager::{buttons::Button, input_action::InputAction},
     resources::{inputs::button_inputs::ButtonInputs, positioned_entities::PositionedEntities},
     systems::cell_randomizer::cell_randomizer,

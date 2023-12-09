@@ -4,7 +4,7 @@ use crate::{
     components::position::Position,
     prefabs::Prefabs,
     resources::{
-        pause_state::{self, PauseState},
+        pause_state::{PauseState},
         positioned_entities::PositionedEntities,
         simulation_speed::SimulationSpeed,
         timer::Timer,

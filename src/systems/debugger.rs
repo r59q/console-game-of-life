@@ -9,12 +9,12 @@ use crate::resources::inputs::axis_inputs::AxisInputs;
 use crate::resources::inputs::button_inputs::ButtonInputs;
 use crate::resources::inputs::mouse_inputs::MouseInputs;
 use crate::resources::pause_state::PauseState;
-use crate::resources::positioned_entities::{self, PositionedEntities};
-use crate::resources::view_offset::{self, ViewOffset};
+use crate::resources::positioned_entities::{PositionedEntities};
+use crate::resources::view_offset::{ViewOffset};
 
 pub fn debugger(
     axial_inputs: Res<AxisInputs>,
-    mut mouse_inputs: ResMut<MouseInputs>,
+    mouse_inputs: ResMut<MouseInputs>,
     button_inputs: Res<ButtonInputs>,
     pause_state: Res<PauseState>,
     view_offset: Res<ViewOffset>,

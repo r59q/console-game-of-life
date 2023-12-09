@@ -109,7 +109,7 @@ mod test {
     #[test]
     fn action_starts_as_none() {
         let left_button = MouseButton::Left;
-        let mut binding = MouseInputs::new();
+        let binding = MouseInputs::new();
         let left_state: &MouseState = binding.get_state(left_button);
 
         let action: InputAction = left_state.get_action();

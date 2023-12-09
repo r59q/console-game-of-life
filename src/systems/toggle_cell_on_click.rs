@@ -1,5 +1,5 @@
 use crate::input_manager::buttons::Button;
-use crate::resources::positioned_entities::{self, PositionedEntities};
+use crate::resources::positioned_entities::{PositionedEntities};
 use crate::{
     input_manager::input_action::InputAction,
     resources::{
@@ -9,7 +9,7 @@ use crate::{
 };
 use bevy_ecs::system::{Commands, Res, ResMut};
 
-use super::utils::cell_spawning::{self, despawn_cell_at, spawn_cell_at};
+use super::utils::cell_spawning::{despawn_cell_at, spawn_cell_at};
 
 pub fn toggle_cell_on_click(
     mouse_inputs: Res<MouseInputs>,

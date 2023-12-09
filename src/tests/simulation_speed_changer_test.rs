@@ -3,7 +3,7 @@ use bevy_ecs::schedule::SystemStage;
 use crate::{
     input_manager::{buttons::Button, input_action::InputAction},
     resources::{inputs::button_inputs::ButtonInputs, simulation_speed::SimulationSpeed},
-    systems::simulation_speed_changer::{self, simulation_speed_changer},
+    systems::simulation_speed_changer::{simulation_speed_changer},
 };
 
 use super::initialize;

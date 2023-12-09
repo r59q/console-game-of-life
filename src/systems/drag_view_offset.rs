@@ -3,7 +3,7 @@ use bevy_ecs::system::{Res, ResMut};
 use crate::{
     input_manager::input_action::InputAction,
     resources::{
-        inputs::mouse_inputs::{MouseInputs, MouseState},
+        inputs::mouse_inputs::{MouseInputs},
         view_offset::ViewOffset,
     },
 };

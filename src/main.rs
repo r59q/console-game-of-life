@@ -1,6 +1,6 @@
 use bevy_ecs::prelude::SystemStage;
 use console_engine::MouseButton::{Left, Right};
-use console_engine::{Color, KeyCode};
+use console_engine::{KeyCode};
 use resources::simulation_speed::SimulationSpeed;
 use resources::ui::help_menu_state::HelpMenuState;
 use resources::ui::tutorial_preset::insert_tutorial_text;
@@ -17,7 +17,7 @@ use crate::input_manager::buttons::Button::{
     Buy, Decrease, Fire1, Fire2, Help, Increase, Pause, Place, Random,
 };
 use crate::input_manager::input_types::InputType::{Key, Mouse};
-use crate::prefabs::Prefabs;
+
 use game::Game;
 use resources::inputs::axis_inputs::AxisInputs;
 use resources::inputs::button_inputs::ButtonInputs;
@@ -36,7 +36,7 @@ use crate::resources::render_targets::RenderTargets;
 use crate::resources::timer::Timer;
 use crate::systems::axis_position_transform::axis_position_transform;
 use crate::systems::character_renderer::{character_renderer, character_renderer_reset};
-use crate::systems::debugger::debugger;
+
 use crate::systems::movement::movement_system;
 use crate::systems::reset_mouse_input::reset_mouse_inputs;
 use crate::systems::timing::timing_system;
