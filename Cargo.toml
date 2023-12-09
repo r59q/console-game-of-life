@@ -11,3 +11,4 @@ rand = "0.8.5"
 bevy_ecs = "0.8.1"
 strum = { version = "0.24.1", features = ["derive"] }
 strum_macros = "0.24.3"
+crossterm = "0.27.0"

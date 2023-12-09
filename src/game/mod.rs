@@ -1,16 +1,12 @@
-
-
 use bevy_ecs::prelude::{Entity, Schedule, Stage, SystemStage};
 use bevy_ecs::schedule::StageLabel;
-use bevy_ecs::world::{World};
-
+use bevy_ecs::world::World;
 use console_engine::{ConsoleEngine, KeyCode};
+use crossterm;
 
 use crate::input_manager::key_binding::{self};
 use crate::prefabs::Prefab;
 use crate::resources::inputs::input_bindings::InputBindings;
-
-
 
 mod rendering;
 
@@ -80,7 +76,13 @@ impl Game {
 
     fn init(&mut self) {
         self.is_started = true;
-        self.engine.check_resize(); // resize the terminal if its size has changed
+
+        match crossterm::terminal::size() {
+            Ok(_size) => self.engine.check_resize(),
+            Err(err) => {
+                println!("{}", err)
+            }
+        }
     }
 
     fn deinit(&mut self) {
