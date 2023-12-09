@@ -16,7 +16,7 @@ fn can_add_place_under_mouse() {
 
     test_env.game.add_stage_to_schedule(
         "update",
-        SystemStage::single_threaded().with_system(place_under_mouse),
+        SystemStage::parallel().with_system(place_under_mouse),
     );
 
     let stage = test_env
