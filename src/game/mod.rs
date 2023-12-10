@@ -21,6 +21,10 @@ impl Game {
     pub fn new(min_width: u32, min_height: u32, target_fps: u32) -> Self {
         let c_engine =
             console_engine::ConsoleEngine::init_fill_require(min_width, min_height, target_fps);
+        println!(
+            "Initializing engine with size ({}, {})",
+            min_width, min_height
+        );
         match c_engine {
             Ok(engine) => {
                 return Self {
@@ -31,7 +35,7 @@ impl Game {
                 };
             }
             Err(error) => {
-                panic!("{}", error);
+                panic!("Failed to initialize the engine!{}", error);
             }
         }
     }
@@ -76,7 +80,8 @@ impl Game {
 
     fn init(&mut self) {
         self.is_started = true;
-
+        // We check the size, due to limitations in C/I tools. C/I tools may not have a terminal
+        // size declared, thus we only check_resize() if a size can be measured
         match crossterm::terminal::size() {
             Ok(_size) => self.engine.check_resize(),
             Err(err) => {
