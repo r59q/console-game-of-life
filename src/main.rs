@@ -1,6 +1,6 @@
 use bevy_ecs::prelude::SystemStage;
-use console_engine_TC_FIX::KeyCode;
-use console_engine_TC_FIX::MouseButton::{Left, Right};
+use console_engine::KeyCode;
+use console_engine::MouseButton::{Left, Right};
 use resources::simulation_speed::SimulationSpeed;
 use resources::ui::help_menu_state::HelpMenuState;
 use resources::ui::tutorial_preset::insert_tutorial_text;

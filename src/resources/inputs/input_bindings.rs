@@ -69,8 +69,8 @@ impl InputBindings {
 
 #[cfg(test)]
 mod test {
-    use console_engine_TC_FIX::KeyCode;
-    use console_engine_TC_FIX::MouseButton::{Left, Right};
+    use console_engine::KeyCode;
+    use console_engine::MouseButton::{Left, Right};
 
     use crate::input_manager::axis::Axis::{Horizontal, Vertical};
     use crate::input_manager::buttons::Button::Fire1;

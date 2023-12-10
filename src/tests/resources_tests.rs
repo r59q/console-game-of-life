@@ -1,5 +1,5 @@
-use console_engine_TC_FIX::KeyCode;
-use console_engine_TC_FIX::MouseButton;
+use console_engine::KeyCode;
+use console_engine::MouseButton;
 use std::time::Duration;
 
 use crate::input_manager::axis::Axis::Horizontal;

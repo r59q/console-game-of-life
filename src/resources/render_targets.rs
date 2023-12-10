@@ -1,4 +1,4 @@
-use console_engine_TC_FIX::Color;
+use console_engine::Color;
 
 use crate::components::position::Position;
 
@@ -57,7 +57,7 @@ impl RenderTargets {
 
 #[cfg(test)]
 mod test {
-    use console_engine_TC_FIX::Color;
+    use console_engine::Color;
 
     use crate::components::position::Position;
     use crate::resources::render_targets::{RenderTarget, RenderTargets};

@@ -1,4 +1,4 @@
-use console_engine_TC_FIX::{KeyCode, MouseButton};
+use console_engine::{KeyCode, MouseButton};
 
 #[derive(Clone, Copy, Eq, PartialEq)]
 pub enum InputType {

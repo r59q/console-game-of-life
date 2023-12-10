@@ -8,7 +8,7 @@ use crate::resources::inputs::axis_inputs::AxisInputs;
 use crate::resources::inputs::button_inputs::ButtonInputs;
 use crate::resources::inputs::input_bindings::InputBindings;
 use crate::resources::inputs::mouse_inputs::MouseInputs;
-use console_engine_TC_FIX::{ConsoleEngine, MouseButton};
+use console_engine::{ConsoleEngine, MouseButton};
 use strum::IntoEnumIterator;
 
 fn handle_input(input: InputType, engine: &ConsoleEngine) -> InputAction {

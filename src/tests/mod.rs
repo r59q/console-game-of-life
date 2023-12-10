@@ -89,7 +89,7 @@ pub fn initialize_with_rendered_entity_and_timing_system() -> TestEnv {
         .insert(Position { x: 0., y: 0. })
         .insert(RenderingCharacter {
             character: 't',
-            color: console_engine_TC_FIX::Color::Cyan,
+            color: console_engine::Color::Cyan,
         })
         .id();
     return TestEnv { game, entity };
