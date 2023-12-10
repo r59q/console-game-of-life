@@ -3,7 +3,6 @@ use bevy_ecs::system::EntityCommands;
 use bevy_ecs::world::EntityMut;
 
 mod cell_prefab;
-pub mod player_character_prefab;
 
 pub struct Prefabs {}
 
