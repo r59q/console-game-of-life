@@ -6,9 +6,15 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-console_engine = { version="2.6.1", git = "https://github.com/r59q/console_engine", branch = "tc-fix2" } 
+console_engine = { version="2.6.1", git = "https://github.com/r59q/console_engine", branch = "tc-fix" } 
 rand = "0.8.5"
 bevy_ecs = "0.8.1"
 strum = { version = "0.24.1", features = ["derive"] }
 strum_macros = "0.24.3"
 crossterm = "0.27.0"
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
