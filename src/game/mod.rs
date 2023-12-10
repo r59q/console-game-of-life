@@ -28,7 +28,7 @@ impl Game {
 
         match result {
             Ok(engine_result) => println!("Yay"),
-            Err(err) => println!("Sad {:?}", err),
+            Err(err) => panic!("Sad {:?}", err),
         }
 
         let c_engine =
