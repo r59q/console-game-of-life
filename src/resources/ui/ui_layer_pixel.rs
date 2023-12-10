@@ -1,4 +1,4 @@
-use console_engine::Color;
+use console_engine_TC_FIX::Color;
 
 #[derive(Debug, Clone, Copy)]
 pub struct UILayerPixel {
@@ -22,7 +22,7 @@ impl UILayerPixel {
 
 #[cfg(test)]
 mod test {
-    use console_engine::Color;
+    use console_engine_TC_FIX::Color;
 
     use super::UILayerPixel;
 

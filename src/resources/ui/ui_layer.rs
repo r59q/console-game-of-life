@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use console_engine::Color;
+use console_engine_TC_FIX::Color;
 
 use super::ui_layer_pixel::UILayerPixel;
 
@@ -39,7 +39,7 @@ impl UILayer {
 
 #[cfg(test)]
 mod test {
-    use console_engine::Color;
+    use console_engine_TC_FIX::Color;
 
     use super::UILayer;
 

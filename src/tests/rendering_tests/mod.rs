@@ -16,7 +16,7 @@ fn can_add_rendering_character_component() {
         .spawn()
         .insert(RenderingCharacter {
             character: '#',
-            color: console_engine::Color::Cyan,
+            color: console_engine_TC_FIX::Color::Cyan,
         });
 }
 
@@ -30,7 +30,7 @@ fn can_get_rendering_character_component() {
         .spawn()
         .insert(RenderingCharacter {
             character: '#',
-            color: console_engine::Color::Cyan,
+            color: console_engine_TC_FIX::Color::Cyan,
         })
         .id();
 

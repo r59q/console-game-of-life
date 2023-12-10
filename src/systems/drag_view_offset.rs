@@ -2,15 +2,12 @@ use bevy_ecs::system::{Res, ResMut};
 
 use crate::{
     input_manager::input_action::InputAction,
-    resources::{
-        inputs::mouse_inputs::{MouseInputs},
-        view_offset::ViewOffset,
-    },
+    resources::{inputs::mouse_inputs::MouseInputs, view_offset::ViewOffset},
 };
 
 pub fn drag_view_offset(mut offset: ResMut<ViewOffset>, mouse_inputs: Res<MouseInputs>) {
     if mouse_inputs
-        .get_state(console_engine::MouseButton::Left)
+        .get_state(console_engine_TC_FIX::MouseButton::Left)
         .get_action()
         == InputAction::Drag
     {

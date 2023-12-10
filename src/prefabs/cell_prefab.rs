@@ -15,7 +15,7 @@ impl Prefabs {
             .insert(Position { x: 0., y: 0. })
             .insert(RenderingCharacter {
                 character: '■',
-                color: console_engine::Color::Cyan,
+                color: console_engine_TC_FIX::Color::Cyan,
             })
             .id()
     };
@@ -25,7 +25,7 @@ impl Prefabs {
             base_entity
                 .insert(RenderingCharacter {
                     character: '■',
-                    color: console_engine::Color::Cyan,
+                    color: console_engine_TC_FIX::Color::Cyan,
                 })
                 .id()
         };
@@ -39,7 +39,7 @@ impl Prefabs {
             .insert(UIEntityFlag {})
             .insert(RenderingCharacter {
                 character: '#',
-                color: console_engine::Color::Green,
+                color: console_engine_TC_FIX::Color::Green,
             })
             .id()
     };

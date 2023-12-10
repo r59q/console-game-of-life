@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::input_manager::{axis::Axis};
+use crate::input_manager::axis::Axis;
 use crate::input_manager::buttons::Button;
 use crate::input_manager::input_types::InputType;
 use crate::input_manager::key_binding::axial_binding::AxialBinding;
@@ -8,12 +8,15 @@ use crate::input_manager::key_binding::button_binding::ButtonBinding;
 
 pub struct InputBindings {
     axials: HashMap<Axis, Vec<AxialBinding>>,
-    buttons: HashMap<Button, Vec<ButtonBinding>>
+    buttons: HashMap<Button, Vec<ButtonBinding>>,
 }
 
 impl InputBindings {
     pub fn new() -> Self {
-        Self { axials: HashMap::new(), buttons: HashMap::new() }
+        Self {
+            axials: HashMap::new(),
+            buttons: HashMap::new(),
+        }
     }
 
     pub fn get_axial_bindings(&self, axis: Axis) -> Option<&Vec<AxialBinding>> {
@@ -21,7 +24,9 @@ impl InputBindings {
     }
 
     pub fn bind_to_axis(&mut self, axis: Axis, positive_key: InputType, negative_key: InputType) {
-        let bindings = self.axials.entry(axis)
+        let bindings = self
+            .axials
+            .entry(axis)
             .or_insert(Vec::<AxialBinding>::new());
 
         if positive_key == negative_key {
@@ -36,7 +41,10 @@ impl InputBindings {
             }
         }
 
-        bindings.push(AxialBinding {positive: positive_key, negative: negative_key})
+        bindings.push(AxialBinding {
+            positive: positive_key,
+            negative: negative_key,
+        })
     }
 
     pub fn get_button_bindings(&self, button: Button) -> Option<&Vec<ButtonBinding>> {
@@ -44,29 +52,31 @@ impl InputBindings {
     }
 
     pub fn bind_to_button(&mut self, button: Button, input: InputType) {
-        let bindings = self.buttons.entry(button)
+        let bindings = self
+            .buttons
+            .entry(button)
             .or_insert(Vec::<ButtonBinding>::new());
         for binding in bindings.clone() {
             if binding.button_input == input {
                 return;
             }
         }
-        bindings.push(ButtonBinding {button_input: input})
+        bindings.push(ButtonBinding {
+            button_input: input,
+        })
     }
 }
 
-
 #[cfg(test)]
 mod test {
-    use console_engine::KeyCode;
-    use console_engine::MouseButton::{Left, Right};
+    use console_engine_TC_FIX::KeyCode;
+    use console_engine_TC_FIX::MouseButton::{Left, Right};
 
     use crate::input_manager::axis::Axis::{Horizontal, Vertical};
     use crate::input_manager::buttons::Button::Fire1;
     use crate::input_manager::input_types::InputType::{Key, Mouse};
 
     use super::InputBindings;
-
 
     #[test]
     fn has_axis_horizontal_vertical() {
@@ -102,16 +112,8 @@ mod test {
     fn can_add_new_correct_binding() {
         let mut keybindings = InputBindings::new();
 
-        keybindings.bind_to_axis(
-            Horizontal,
-            Key(KeyCode::Char('d')),
-            Key(KeyCode::Char('a'))
-        );
-        keybindings.bind_to_axis(
-            Vertical,
-            Key(KeyCode::Char('w')),
-            Key(KeyCode::Char('s'))
-        );
+        keybindings.bind_to_axis(Horizontal, Key(KeyCode::Char('d')), Key(KeyCode::Char('a')));
+        keybindings.bind_to_axis(Vertical, Key(KeyCode::Char('w')), Key(KeyCode::Char('s')));
         let binding_horizontal = keybindings.get_axial_bindings(Horizontal);
         let binding_vertical = keybindings.get_axial_bindings(Vertical);
         let opt_binding_horizontal = binding_horizontal.unwrap().get(0);
@@ -123,7 +125,7 @@ mod test {
                 let neg = binding.negative;
                 assert!(matches!(pos, Key(KeyCode::Char('d'))));
                 assert!(matches!(neg, Key(KeyCode::Char('a'))));
-            },
+            }
             None => assert!(false),
         }
 
@@ -133,7 +135,7 @@ mod test {
                 let neg = binding.negative;
                 assert!(matches!(pos, Key(KeyCode::Char('w'))));
                 assert!(matches!(neg, Key(KeyCode::Char('s'))));
-            },
+            }
             None => assert!(false),
         }
     }
@@ -143,7 +145,6 @@ mod test {
         let keybindings = InputBindings::new();
 
         let _fire1_bindings = keybindings.get_button_bindings(Fire1);
-
     }
 
     #[test]
@@ -173,12 +174,8 @@ mod test {
         keybindings.bind_to_button(Fire1, Mouse(Left));
         keybindings.bind_to_button(Fire1, Mouse(Left));
 
-        keybindings.bind_to_axis(Horizontal,
-                                 Key(KeyCode::Char('x')),
-                                 Key(KeyCode::Char('y')));
-        keybindings.bind_to_axis(Horizontal,
-                                 Key(KeyCode::Char('x')),
-                                 Key(KeyCode::Char('y')));
+        keybindings.bind_to_axis(Horizontal, Key(KeyCode::Char('x')), Key(KeyCode::Char('y')));
+        keybindings.bind_to_axis(Horizontal, Key(KeyCode::Char('x')), Key(KeyCode::Char('y')));
 
         let added_button_bindings = keybindings.get_button_bindings(Fire1);
         let added_axis_bindings = keybindings.get_axial_bindings(Horizontal);

@@ -1,5 +1,5 @@
 use bevy_ecs::prelude::{Res, ResMut};
-use console_engine::MouseButton;
+use console_engine_TC_FIX::MouseButton;
 
 use strum::IntoEnumIterator;
 
@@ -9,8 +9,8 @@ use crate::resources::inputs::axis_inputs::AxisInputs;
 use crate::resources::inputs::button_inputs::ButtonInputs;
 use crate::resources::inputs::mouse_inputs::MouseInputs;
 use crate::resources::pause_state::PauseState;
-use crate::resources::positioned_entities::{PositionedEntities};
-use crate::resources::view_offset::{ViewOffset};
+use crate::resources::positioned_entities::PositionedEntities;
+use crate::resources::view_offset::ViewOffset;
 
 pub fn debugger(
     axial_inputs: Res<AxisInputs>,

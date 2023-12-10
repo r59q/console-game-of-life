@@ -1,10 +1,9 @@
-use std::error::Error;
 use std::panic;
 
 use bevy_ecs::prelude::{Entity, Schedule, Stage, SystemStage};
 use bevy_ecs::schedule::StageLabel;
 use bevy_ecs::world::World;
-use console_engine::{ConsoleEngine, KeyCode};
+use console_engine_TC_FIX::{ConsoleEngine, KeyCode};
 use crossterm;
 
 use crate::input_manager::key_binding::{self};
@@ -22,8 +21,10 @@ pub struct Game {
 
 impl Game {
     pub fn new(min_width: u32, min_height: u32, target_fps: u32) -> Self {
-        let c_engine =
-            console_engine::ConsoleEngine::init_fill_require(min_width, min_height, target_fps);
+        let c_engine = console_engine_TC_FIX::ConsoleEngine::init_fill_require(
+            min_width, min_height, target_fps,
+        );
+
         println!(
             "Initializing engine with size ({}, {})",
             min_width, min_height
