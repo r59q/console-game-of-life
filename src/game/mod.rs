@@ -38,7 +38,7 @@ impl Game {
                 };
             }
             Err(error) => {
-                panic!("Failed to initialize the engine!{}", error);
+                panic!("Failed to initialize the engine!\n {}", error);
             }
         }
     }
