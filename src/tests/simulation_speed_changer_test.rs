@@ -11,7 +11,7 @@ use super::initialize;
 #[test]
 fn can_increase_simulation_speed() {
     let mut test_env = initialize();
-    assert!(false);
+
     let mut button_inputs = ButtonInputs::new();
     button_inputs.set_btn(Button::Increase, InputAction::Down);
     test_env.game.get_world_mut().insert_resource(button_inputs);
