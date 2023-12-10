@@ -1,3 +1,6 @@
+use std::error::Error;
+use std::panic;
+
 use bevy_ecs::prelude::{Entity, Schedule, Stage, SystemStage};
 use bevy_ecs::schedule::StageLabel;
 use bevy_ecs::world::World;
@@ -19,6 +22,15 @@ pub struct Game {
 
 impl Game {
     pub fn new(min_width: u32, min_height: u32, target_fps: u32) -> Self {
+        let result = panic::catch_unwind(|| {
+            console_engine::ConsoleEngine::init_fill_require(min_width, min_height, target_fps)
+        });
+
+        match result {
+            Ok(engine_result) => println!("Yay"),
+            Err(err) => println!("Sad {:?}", err),
+        }
+
         let c_engine =
             console_engine::ConsoleEngine::init_fill_require(min_width, min_height, target_fps);
         println!(
