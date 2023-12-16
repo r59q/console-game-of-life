@@ -5,6 +5,9 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[alias]   # Command aliases
+win="build --target x86_64-pc-windows-gnu"
+
 [dependencies]
 console_engine = "2.6.1" 
 rand = "0.8.5"
