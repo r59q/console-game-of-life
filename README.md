@@ -20,9 +20,7 @@ All game logic is handled by the [Bevy Entity Component System(ECS)](https://cra
 You can either clone the repository and do `cargo run` or you can download a build from the links below
 
 **Downloads**
-- [Windows](link_to_windows) (Not available right now)
-- [Mac OS](link_to_macos) (Not available right now)
-- [Linux](link_to_linux) (Not available right now)
+- [Download page]((https://consolegameoflife.com/download/)
 
 ## How to play
 Conway's Game of Life is a so-called zero-player game, meaning you can simply configure the initial state of the simulation and observe it unfold.
