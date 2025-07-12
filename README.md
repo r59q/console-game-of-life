@@ -49,3 +49,25 @@ For a target fps of 40 use the parameter
 cargo run -- 40
 ```
 
+## Building
+To build the project, you need to have Rust installed. You can install it from [rustup.rs](https://rustup.rs/).
+
+After installing Rust, you can build the project by running:
+```bash
+cargo build --release
+```
+
+**Building for windows on linux**
+
+ensure you have the `x86_64-pc-windows-gnu` target installed. You can do this by running:
+```bash
+rustup target add x86_64-pc-windows-gnu
+```
+you may also need to install the `mingw-w64` toolchain, which can be done on Arch with:
+```bash
+sudo pacman -S mingw-w64-gcc
+```
+build the project with the target:
+```bash
+cargo build --release --target=x86_64-pc-windows-gnu
+```
